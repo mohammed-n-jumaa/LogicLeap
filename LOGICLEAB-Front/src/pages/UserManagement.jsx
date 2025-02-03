@@ -1,23 +1,22 @@
-// src/components/UserManagement.jsx
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; 
-import 'bootstrap/dist/css/bootstrap.min.css'; 
-import '@fortawesome/fontawesome-free/css/all.min.css'; 
-import '../assets/css/styles.min.css'; 
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import '../assets/css/styles.min.css';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
 const UserManagement = () => {
-    const [users, setUsers] = useState([
-        { id: 1, name: 'Ahmad', email: 'Ahmad@gmail.com', phone: '0781617814', role: 'User' },
-        { id: 2, name: 'Mohammad', email: 'Mohammad@gmail.com', phone: '0772827918', role: 'Admin' },
-        { id: 3, name: 'Hamza', email: 'Hamza@gmail.com', phone: '0797563837', role: 'Super Admin' },
-        { id: 4, name: 'Muna', email: 'Muna@gmail.com', phone: '0776522644', role: 'User' },
-        { id: 5, name: 'Mousa', email: 'Mousa@gmail.com', phone: '0786644322', role: 'Admin' },
-    ]);
-
+    const [users, setUsers] = useState([]);
     const [modalUser, setModalUser] = useState(null);
     const [editUser, setEditUser] = useState({ id: '', name: '', email: '', phone: '', role: '' });
+
+    // جلب بيانات المستخدمين من API
+    useEffect(() => {
+        fetch('http://localhost:8000/api/users')
+            .then((response) => response.json())
+            .then((data) => setUsers(data));
+    }, []);
 
     const openModal = (user) => {
         setModalUser(user);
@@ -25,8 +24,21 @@ const UserManagement = () => {
     };
 
     const saveChanges = () => {
-        setUsers(users.map(user => (user.id === editUser.id ? editUser : user)));
-        setModalUser(null);
+        fetch(`http://localhost:8000/api/users/${editUser.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(editUser),
+        })
+            .then((response) => response.json())
+            .then(() => {
+                setUsers(users.map((user) => (user.id === editUser.id ? editUser : user)));
+                setModalUser(null);
+            });
+    };
+
+    const deleteUser = (id) => {
+        fetch(`http://localhost:8000/api/users/${id}`, { method: 'DELETE' })
+            .then(() => setUsers(users.filter((user) => user.id !== id)));
     };
 
     return (
@@ -66,7 +78,7 @@ const UserManagement = () => {
                                                     <td className="text-center">{user.role}</td>
                                                     <td className="text-center">
                                                         <i className="fas fa-edit" onClick={() => openModal(user)} style={{ cursor: 'pointer' }}></i>
-                                                        <i className="fas fa-trash" style={{ marginLeft: '10px', cursor: 'pointer' }}></i>
+                                                        <i className="fas fa-trash" style={{ marginLeft: '10px', cursor: 'pointer' }} onClick={() => deleteUser(user.id)}></i>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -92,40 +104,40 @@ const UserManagement = () => {
                                         <input type="hidden" value={editUser.id} />
                                         <div className="mb-3">
                                             <label htmlFor="userName" className="form-label">Name</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                value={editUser.name} 
-                                                onChange={(e) => setEditUser({ ...editUser, name: e.target.value })} 
-                                                required 
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editUser.name}
+                                                onChange={(e) => setEditUser({ ...editUser, name: e.target.value })}
+                                                required
                                             />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="userEmail" className="form-label">Email</label>
-                                            <input 
-                                                type="email" 
-                                                className="form-control" 
-                                                value={editUser.email} 
-                                                onChange={(e) => setEditUser({ ...editUser, email: e.target.value })} 
-                                                required 
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                value={editUser.email}
+                                                onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
+                                                required
                                             />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="userPhone" className="form-label">Phone</label>
-                                            <input 
-                                                type="text" 
-                                                className="form-control" 
-                                                value={editUser.phone} 
-                                                onChange={(e) => setEditUser({ ...editUser, phone: e.target.value })} 
-                                                required 
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                value={editUser.phone}
+                                                onChange={(e) => setEditUser({ ...editUser, phone: e.target.value })}
+                                                required
                                             />
                                         </div>
                                         <div className="mb-3">
                                             <label htmlFor="userRole" className="form-label">Role</label>
-                                            <select 
-                                                className="form-select" 
-                                                value={editUser.role} 
-                                                onChange={(e) => setEditUser({ ...editUser, role: e.target.value })} 
+                                            <select
+                                                className="form-select"
+                                                value={editUser.role}
+                                                onChange={(e) => setEditUser({ ...editUser, role: e.target.value })}
                                                 required
                                             >
                                                 <option value="" disabled>Select Role</option>
@@ -147,6 +159,6 @@ const UserManagement = () => {
             </div>
         </div>
     );
-}
+};
 
 export default UserManagement;

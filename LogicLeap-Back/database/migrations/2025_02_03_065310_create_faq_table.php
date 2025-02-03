@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('answer');
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
+            $table->softDeletes(); // Adds deleted_at column
         });
     }
 

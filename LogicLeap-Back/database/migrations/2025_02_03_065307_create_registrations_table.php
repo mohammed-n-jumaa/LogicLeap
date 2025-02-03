@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamp('registration_date');
             $table->enum('status', ['pending', 'confirmed', 'cancelled']);
             $table->timestamps();
+            $table->softDeletes(); // Adds deleted_at column
         });
     }
 

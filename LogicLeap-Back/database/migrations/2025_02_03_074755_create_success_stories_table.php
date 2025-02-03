@@ -9,15 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('partners', function (Blueprint $table) {
+        Schema::create('success_stories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('logo');
-            $table->string('website');
             $table->timestamps();
-            $table->softDeletes(); // Adds deleted_at column
         });
     }
 
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('partners');
+        Schema::dropIfExists('success_stories');
     }
 };

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -7,73 +6,70 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    // عرض جميع المستخدمين
     public function index()
     {
-        return response()->json(User::all(), 200);
+        return User::all();
     }
 
+    // إضافة مستخدم جديد
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'required|string|max:20',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:user,admin,super_admin',
+            'role' => 'required|string',
+            'password' => 'required|string|min:8',
         ]);
 
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'password' => bcrypt($validated['password']),
-            'role' => $validated['role'],
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'role' => $request->role,
+            'password' => bcrypt($request->password),
         ]);
 
         return response()->json($user, 201);
     }
 
+    // عرض تفاصيل مستخدم
     public function show($id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-        return response()->json($user, 200);
+        return User::findOrFail($id);
     }
 
+    // تعديل مستخدم
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+        $user = User::findOrFail($id);
 
-        $validated = $request->validate([
-            'name' => 'string|max:255',
-            'email' => 'email|unique:users,email,' . $id,
-            'phone' => 'string|max:20',
-            'password' => 'string|min:6',
-            'role' => 'in:user,admin,super_admin',
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'required|string|max:20',
+            'role' => 'required|string',
         ]);
 
-        $user->update($validated);
-        if ($request->has('password')) {
-            $user->password = bcrypt($request->password);
-            $user->save();
-        }
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'role' => $request->role,
+        ]);
 
-        return response()->json($user, 200);
+        return response()->json($user);
     }
 
     public function destroy($id)
-    {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
+{
+    $user = User::findOrFail($id);
+    
+    // تنفيذ Soft Delete بدلاً من الحذف الفعلي
+    $user->delete();
+    
+    return response()->json(['message' => 'User soft deleted successfully']);
+}
 
-        $user->delete();
-        return response()->json(['message' => 'User deleted successfully'], 200);
-    }
 }

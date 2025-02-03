@@ -22,6 +22,7 @@ return new class extends Migration
             $table->text('details');
             $table->enum('status', ['pending', 'in progress', 'completed']);
             $table->timestamps();
+            $table->softDeletes(); // Adds deleted_at column
         });
     }
 

@@ -2,63 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Program;
 use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // جلب جميع البرامج
     public function index()
     {
-        //
+        return response()->json(Program::all());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // إضافة برنامج جديد
     public function store(Request $request)
     {
-        //
+        $program = Program::create($request->all());
+        return response()->json($program, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // تعديل برنامج
+    public function update(Request $request, $id)
     {
-        //
+        $program = Program::findOrFail($id);
+        $program->update($request->all());
+        return response()->json($program, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // حذف برنامج بشكل ناعم
+    public function softDelete($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $program = Program::findOrFail($id);
+        $program->delete(); // هذا سيؤدي إلى الحذف الناعم باستخدام `softDeletes`
+        return response()->json(null, 204);
     }
 }

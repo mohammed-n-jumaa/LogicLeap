@@ -2,63 +2,69 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Registration;
 use Illuminate\Http\Request;
 
 class RegistrationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return response()->json(Registration::all(), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'program_id' => 'required|exists:programs,id',
+            'form_id' => 'nullable|exists:forms,id',
+            'registration_date' => 'required|date',
+            'status' => 'required|in:pending,confirmed,cancelled',
+        ]);
+
+        $registration = Registration::create($validated);
+
+        return response()->json($registration, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $registration = Registration::find($id);
+        if (!$registration) {
+            return response()->json(['message' => 'Registration not found'], 404);
+        }
+        return response()->json($registration, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $registration = Registration::find($id);
+        if (!$registration) {
+            return response()->json(['message' => 'Registration not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'user_id' => 'exists:users,id',
+            'program_id' => 'exists:programs,id',
+            'form_id' => 'nullable|exists:forms,id',
+            'registration_date' => 'date',
+            'status' => 'in:pending,confirmed,cancelled',
+        ]);
+
+        $registration->update($validated);
+
+        return response()->json($registration, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        //
-    }
+        $registration = Registration::find($id);
+        if (!$registration) {
+            return response()->json(['message' => 'Registration not found'], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $registration->delete();
+
+        return response()->json(['message' => 'Registration deleted successfully'], 200);
     }
 }

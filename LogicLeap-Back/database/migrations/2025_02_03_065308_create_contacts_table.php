@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('phone', 20);
             $table->text('message');
             $table->timestamps();
+            $table->softDeletes(); // Adds deleted_at column
         });
     }
 

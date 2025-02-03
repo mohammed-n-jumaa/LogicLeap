@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['user', 'admin', 'super_admin']);
             $table->timestamps();
+            $table->softDeletes(); // Adds deleted_at column
         });
     }
 

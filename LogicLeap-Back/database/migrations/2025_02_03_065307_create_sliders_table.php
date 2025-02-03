@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('link');
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
+            $table->softDeletes(); // Adds deleted_at column
         });
     }
 

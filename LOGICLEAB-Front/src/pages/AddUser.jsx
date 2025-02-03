@@ -1,4 +1,3 @@
-// src/components/AddUser.jsx
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -16,22 +15,36 @@ const AddUser = () => {
     });
 
     const handleChange = (e) => {
-        const { id, value } = e.target;
-        setUserData({ ...userData, [id]: value });
+        const { name, value } = e.target;
+        setUserData({ ...userData, [name]: value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('User added:', userData);
+        
+        // Send a POST request to create a new user
+        fetch('http://localhost:8000/api/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('User added:', data);
+                
+                // Reset the form
+                setUserData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    role: '',
+                    password: ''
+                });
 
-
-        setUserData({
-            name: '',
-            email: '',
-            phone: '',
-            role: '',
-            password: ''
-        });
+                // Optionally, redirect to the user management page
+                window.location.href = '/users'; // Adjust to your route
+            })
+            .catch((error) => console.error('Error:', error));
     };
 
     return (
@@ -46,43 +59,47 @@ const AddUser = () => {
                                 <h5 className="card-title fw-semibold mb-4">Add New User</h5>
                                 <form id="addUserForm" onSubmit={handleSubmit}>
                                     <div className="mb-3">
-                                        <label htmlFor="userName" className="form-label">Name</label>
-                                        <input 
-                                            type="text" 
-                                            className="form-control" 
-                                            id="userName" 
+                                        <label htmlFor="name" className="form-label">Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="name"
+                                            name="name"
                                             value={userData.name}
                                             onChange={handleChange}
-                                            required 
+                                            required
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="userEmail" className="form-label">Email</label>
-                                        <input 
-                                            type="email" 
-                                            className="form-control" 
-                                            id="userEmail" 
+                                        <label htmlFor="email" className="form-label">Email</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="email"
+                                            name="email"
                                             value={userData.email}
                                             onChange={handleChange}
-                                            required 
+                                            required
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="userPhone" className="form-label">Phone</label>
-                                        <input 
-                                            type="text" 
-                                            className="form-control" 
-                                            id="userPhone" 
+                                        <label htmlFor="phone" className="form-label">Phone</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="phone"
+                                            name="phone"
                                             value={userData.phone}
                                             onChange={handleChange}
-                                            required 
+                                            required
                                         />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="userRole" className="form-label">Role</label>
-                                        <select 
-                                            className="form-select" 
-                                            id="userRole" 
+                                        <label htmlFor="role" className="form-label">Role</label>
+                                        <select
+                                            className="form-select"
+                                            id="role"
+                                            name="role"
                                             value={userData.role}
                                             onChange={handleChange}
                                             required
@@ -94,14 +111,15 @@ const AddUser = () => {
                                         </select>
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="userPassword" className="form-label">Password</label>
-                                        <input 
-                                            type="password" 
-                                            className="form-control" 
-                                            id="userPassword" 
+                                        <label htmlFor="password" className="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            name="password"
                                             value={userData.password}
                                             onChange={handleChange}
-                                            required 
+                                            required
                                         />
                                     </div>
                                     <button type="submit" className="btn btn-primary">Add User</button>
@@ -113,6 +131,6 @@ const AddUser = () => {
             </div>
         </div>
     );
-}
+};
 
 export default AddUser;
