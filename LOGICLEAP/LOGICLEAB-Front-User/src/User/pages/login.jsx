@@ -1,0 +1,165 @@
+import React, { useState } from 'react';
+import '../assets/css/reg.css';
+import Header from '../components/header';
+
+const LoginPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.password) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      alert('Login successful!');
+    }, 2000);
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
+  };
+
+  return (
+    <>
+      <style>
+        {`
+          :root {
+            --primary-red: #ff3333;
+            --primary-green: #28a745;
+            --accent-red: #ff6b6b;
+            --accent-green: #34eb74;
+          }
+
+          body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: #fff;
+          }
+
+          .page-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 80px);
+            padding-top: 80px;
+          }
+
+          .login-container {
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+          }
+
+          .logo-container {
+            margin-bottom: 20px;
+          }
+
+          .form-floating {
+            position: relative;
+            margin-bottom: 15px;
+          }
+
+          .form-floating input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+          }
+
+         
+          .register-text {
+            margin-top: 15px;
+            font-size: 14px;
+          }
+
+          .register-text a {
+            color: var(--primary-red);
+            text-decoration: none;
+          }
+        `}
+      </style>
+      <Header />
+      <div className="page-container">
+        <div className="login-container">
+          <div className="logo-container">
+            <div className="logo">
+              <span className="L1">L</span>
+              <span className="ogic">ogic</span>
+              <span className="L2">L</span>
+              <span className="eap">eap</span>
+            </div>
+            <div className="logo-text">User Portal</div>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-floating">
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                placeholder="Enter your email address" 
+                value={formData.email}
+                onChange={handleChange}
+              />
+              <label htmlFor="email">Email Address</label> {/* Floating label */}
+            </div>
+
+            <div className="form-floating">
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                placeholder="Enter your password" 
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <label htmlFor="password">Password</label> 
+            </div>
+
+
+            <button type="submit" className="btn-login" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2"></span>
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-sign-in-alt me-2"></i>
+                  Sign In
+                </>
+              )}
+            </button>
+
+            <div className="register-text">
+              <span>Don't have an account?</span>{' '}
+              <a href="/register">Register now!</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default LoginPage;
