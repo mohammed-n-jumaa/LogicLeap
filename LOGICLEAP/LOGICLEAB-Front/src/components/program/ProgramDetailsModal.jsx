@@ -1,8 +1,7 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Video, DollarSign, Tag } from 'lucide-react';
-import cssLogo from '../../assets/images/backgrounds/CSS-Logo.png'; // المسار النسبي
+import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Layers, Clipboard } from 'lucide-react';
 
-const ProgramDetailsModal = ({ program, onClose }) => {
+const ProgramDetailsModal = ({ program, onClose, categories }) => {
   if (!program) return null;
 
   const formatDate = (date) => new Date(date).toLocaleDateString('en-US');
@@ -10,6 +9,15 @@ const ProgramDetailsModal = ({ program, onClose }) => {
   const getStatusBadgeClass = (status) => {
     return status === 'active' ? 'bg-success' : 'bg-danger';
   };
+
+  // Function to get category name from category ID
+  const getCategoryName = () => {
+    if (program.category && typeof program.category === 'object') {
+      return program.category.name || 'Unknown Category';
+    }
+    return 'Category not specified';
+  };
+
 
   return (
     <div className="modal fade show" style={{ display: 'block' }}>
@@ -21,7 +29,7 @@ const ProgramDetailsModal = ({ program, onClose }) => {
           </div>
 
           <div className="modal-body">
-          <div className="position-relative mb-4 d-flex justify-content-center align-items-center">
+            <div className="position-relative mb-4 d-flex justify-content-center align-items-center">
               <img
                 src={program.image}
                 alt={program.title}
@@ -33,13 +41,11 @@ const ProgramDetailsModal = ({ program, onClose }) => {
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                 }}
                 onError={(e) => {
-                  e.target.src = '/placeholder-image.jpg'; // Add a fallback image
-                  e.target.onerror = null; // Prevent infinite loop if placeholder also fails
+                  e.target.src = '/placeholder-image.jpg';
+                  e.target.onerror = null;
                 }}
               />
             </div>
-
-
 
             <div className="row g-4">
               {/* Program Info Card */}
@@ -67,6 +73,13 @@ const ProgramDetailsModal = ({ program, onClose }) => {
                         <div>
                           <small className="text-muted d-block">Duration</small>
                           <span className="fw-medium">{program.duration} hours</span>
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center gap-2">
+                        <Layers className="text-primary" size={20} />
+                        <div>
+                          <small className="text-muted d-block">Category</small>
+                          <span className="fw-medium">{getCategoryName(program.category_id)}</span>
                         </div>
                       </div>
                     </div>
@@ -105,19 +118,45 @@ const ProgramDetailsModal = ({ program, onClose }) => {
                           )}
                         </div>
                       </div>
-                      <div className="d-flex align-items-center gap-2">
+                      <div
+                        className="d-flex align-items-center gap-2"
+                        style={{ color: '#c2cad6' }}
+                      >
                         <Tag className="text-purple" size={20} />
                         <div>
-                          <small className="text-muted d-block">Attendance Mode</small>
+                          <small
+                            className="text-muted d-block"
+                            style={{ color: '#c2cad6' }}
+                          >
+                            Attendance Mode
+                          </small>
                           <span
-                            className="badge bg-light text-purple mt-1"
-                            style={{ color: '#afbac8', fontWeight: 'bold' }}
+                            className="badge bg-light mt-1 fw-bold"
+                            style={{ color: '#c2cad6', backgroundColor: '#f8f9fa' }}
                           >
                             {program.mode}
                           </span>
                         </div>
                       </div>
+
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modules and What You'll Learn Card */}
+            <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f9f9ff 0%, #ffffff 100%)' }}>
+              <div className="card-body">
+                <h3 className="fs-5 fw-bold mb-4 text-info">Program Modules & Learnings</h3>
+                <div className="d-flex flex-column gap-3">
+                  <div className="mt-2">
+                    <small className="text-muted d-block mb-2">Modules</small>
+                    <p className="text-gray-700 lh-base">{program.modules || 'Not specified'}</p>
+                  </div>
+                  <div className="mt-2">
+                    <small className="text-muted d-block mb-2">What You'll Learn</small>
+                    <p className="text-gray-700 lh-base">{program.what_youll_learn || 'Not specified'}</p>
                   </div>
                 </div>
               </div>
@@ -131,8 +170,8 @@ const ProgramDetailsModal = ({ program, onClose }) => {
                   <div className="d-flex align-items-center gap-2">
                     <DollarSign className="text-success" size={20} />
                     <div>
-                      <small className="text-muted d-block">Price</small>
-                      <span className="fw-medium">${program.price}</span>
+                      <small className="text-muted d-block">Cost</small>
+                      <span className="fw-medium">${program.cost}</span>
                     </div>
                   </div>
                   <div className="mt-2">
@@ -144,11 +183,9 @@ const ProgramDetailsModal = ({ program, onClose }) => {
             </div>
 
             <div className="text-center mt-4">
-              <span 
+              <span
                 className={`badge ${getStatusBadgeClass(program.status)}`}
-                style={{ 
-                  backgroundColor: program.status === 'active' ? null : '#ff4c4c'
-                }}
+                style={{ backgroundColor: program.status === 'active' ? null : '#ff4c4c' }}
               >
                 {program.status === 'active' ? 'Active' : 'Inactive'}
               </span>

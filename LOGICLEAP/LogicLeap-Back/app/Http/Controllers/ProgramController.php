@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProgramController extends Controller
 {
@@ -18,36 +19,31 @@ class ProgramController extends Controller
             'description' => 'required|string',
             'category_id' => 'required|integer',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'duration' => 'required|integer',
-            'cost' => 'required|numeric',
-            'price' => 'required|string',
-            'status' => 'required|string',
-            'mode' => 'required|string',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'duration' => 'required|integer|min:1',
+            'cost' => 'required_if:price,paid|nullable|numeric|min:0',
+            'price' => 'required|in:free,paid',
+            'status' => 'required|in:active,inactive',
+            'mode' => 'required|in:online,onsite,hybrid',
             'zoom_link' => 'nullable|url',
             'location' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'modules' => 'nullable|string',
+            'what_youll_learn' => 'nullable|string'
         ]);
     
-        $path = $request->file('image')->store('programs', 'public');
+        $data = $request->except('image');
+        
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('programs', 'public');
+        }
     
-        $program = Program::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'category_id' => $request->category_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'duration' => $request->duration,
-            'cost' => $request->cost,
-            'price' => $request->price,
-            'status' => $request->status,
-            'mode' => $request->mode,
-            'zoom_link' => $request->zoom_link,
-            'location' => $request->location,
-            'image' => $path,
-        ]);
+        $program = Program::create($data);
     
-        return response()->json(['message' => 'Program created successfully', 'program' => $program], 201);
+        return response()->json([
+            'message' => 'Program created successfully', 
+            'program' => $program->load('category')
+        ], 201);
     }
 
     public function show(Program $program)
@@ -56,43 +52,45 @@ class ProgramController extends Controller
     }
 
     public function update(Request $request, Program $program)
-{
-    // تحقق من وجود البرنامج
-    if (!$program) {
-        return response()->json(['message' => 'Program not found'], 404);
+    {
+        if (!$program) {
+            return response()->json(['message' => 'Program not found'], 404);
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'duration' => 'required|integer|min:1',
+            'cost' => 'required_if:price,paid|nullable|numeric|min:0',
+            'price' => 'required|in:free,paid',
+            'status' => 'required|in:active,inactive',
+            'mode' => 'required|in:online,onsite,hybrid',
+            'zoom_link' => 'nullable|url',
+            'location' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'modules' => 'nullable|string',
+            'what_youll_learn' => 'nullable|string'
+        ]);
+
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($program->image) {
+                Storage::disk('public')->delete($program->image);
+            }
+            
+            $data['image'] = $request->file('image')->store('programs', 'public');
+        }
+
+        $program->update($data);
+
+        return response()->json([
+            'message' => 'Program updated successfully', 
+        ]);
     }
-
-    // التحقق من صحة البيانات المدخلة
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'required|string',
-        'category_id' => 'required|integer',
-        'start_date' => 'required|date',
-        'end_date' => 'required|date',
-        'duration' => 'required|integer',
-        'cost' => 'required|numeric',
-        'price' => 'required|string',
-        'status' => 'required|string',
-        'mode' => 'required|string',
-        'zoom_link' => 'nullable|url',
-        'location' => 'required|string|max:255',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    // تحديث الحقول العامة
-    $program->fill($request->only('title', 'description', 'category_id', 'start_date', 'end_date', 'duration', 'cost', 'price', 'status', 'mode', 'zoom_link', 'location'));
-
-    // إذا تم تحميل صورة جديدة، قم بتحديثها
-    if ($request->hasFile('image')) {
-        $path = $request->file('image')->store('programs', 'public');
-        $program->image = $path; // تحديث مسار الصورة
-    }
-
-    // حفظ التغييرات
-    $program->save();
-
-    return response()->json(['message' => 'Program updated successfully', 'program' => $program]);
-}
 
     public function softDelete($id)
     {
@@ -112,6 +110,11 @@ class ProgramController extends Controller
 
         if (!$program) {
             return response()->json(['message' => 'Program not found'], 404);
+        }
+
+        // Delete the program image if it exists
+        if ($program->image) {
+            Storage::disk('public')->delete($program->image);
         }
 
         $program->forceDelete();

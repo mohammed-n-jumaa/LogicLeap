@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+// Header.js
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../assets/css/main.css';
 
-function Header() {
-  const [mobileNavActive, setMobileNavActive] = useState(false);
-  const location = useLocation();
+function Header({ isLoggedIn, onLogout }) {
+  const navigate = useNavigate();
 
-  const toggleMobileNav = () => {
-    setMobileNavActive(!mobileNavActive);
-  };
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('auth-token')}`,
+        }
+      });
 
-  const isActive = (path) => {
-    return location.pathname === path ? 'active' : '';
+      if (response.ok) {
+        onLogout();
+        navigate('/login');
+      } else {
+        console.error('Logout failed');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
@@ -21,23 +33,25 @@ function Header() {
           <h1 className="sitename">LogicLeap</h1>
         </Link>
 
-        <nav id="navmenu" className={`navmenu ${mobileNavActive ? 'mobile-nav-active' : ''}`}>
+        <nav id="navmenu" className="navmenu">
           <ul>
-            <li><Link to="/home" className={isActive('/home')}>Home</Link></li>
-            <li><Link to="/about" className={isActive('/about')}>About</Link></li>
-            <li><Link to="/services" className={isActive('/services')}>Services</Link></li>
-            <li><Link to="/courses2" className={isActive('/courses2')}>Courses</Link></li>
-            <li><Link to="/contact" className={isActive('/contact')}>Contact</Link></li>
+            <li><Link to="/home">Home</Link></li>
+            <li><Link to="/about">About</Link></li>
+            <li><Link to="/services">Services</Link></li>
+            <li><Link to="/courses2">Courses</Link></li>
+            <li><Link to="/contact">Contact</Link></li>
           </ul>
-          <i
-            className={`mobile-nav-toggle d-xl-none bi ${mobileNavActive ? 'bi-x' : 'bi-list'}`}
-            onClick={toggleMobileNav}
-          />
         </nav>
 
-        <a className="btn-getstarted" href="/login">
-          <i className="bi bi-person-plus"></i>
-        </a>
+        {isLoggedIn ? (
+          <button className="btn-getstarted" onClick={handleLogout}>
+            <i className="bi bi-box-arrow-right"></i> تسجيل خروج
+          </button>
+        ) : (
+          <Link className="btn-getstarted" to="/login">
+            <i className="bi bi-person-plus"></i> تسجيل دخول
+          </Link>
+        )}
       </div>
     </header>
   );

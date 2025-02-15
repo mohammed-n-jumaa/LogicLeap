@@ -14,14 +14,16 @@ class Program extends Model
     protected $fillable = [
         'title', 'description', 'category_id', 'start_date', 'end_date', 
         'duration', 'cost', 'price', 'status', 'mode', 'zoom_link', 
-        'location', 'image'
+        'location', 'image','modules',
+        'what_youll_learn'
     ];
     protected $table = 'programs';
     
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+   // في ملف Program.php
+public function category()
+{
+    return $this->belongsTo(Category::class, 'category_id');
+}
 
     public function registrations()
     {

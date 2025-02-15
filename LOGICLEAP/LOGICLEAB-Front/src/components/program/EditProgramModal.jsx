@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Image } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Layers, Image } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 const EditProgramModal = ({ program, onClose, onSave }) => {
   const [formData, setFormData] = React.useState({});
@@ -8,11 +9,12 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
 
   useEffect(() => {
     if (program) {
-      setFormData({
+      console.log('Program Data:', program);
+      setFormData(prevData => ({
+        ...prevData,
         id: program.id,
         title: program.title,
         description: program.description,
-        category_id: program.category_id,
         start_date: program.start_date,
         end_date: program.end_date,
         duration: program.duration,
@@ -21,30 +23,45 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
         status: program.status,
         mode: program.mode,
         zoom_link: program.zoom_link || '',
-        location: program.location
-      });
+        location: program.location,
+        modules: program.modules || '',
+        what_youll_learn: program.what_youll_learn || ''
+      }));
+      setPreviewImage(program.image || null);
     }
   }, [program]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSend = new FormData();
-    
+  
     Object.keys(formData).forEach(key => {
       if (formData[key] !== null && formData[key] !== undefined) {
         dataToSend.append(key, formData[key]);
       }
     });
-
+  
     if (imageFile) {
       dataToSend.append('image', imageFile);
     }
-
+  
+    console.log([...dataToSend.entries()]); // هذا السطر للتأكد من أن البيانات يتم إرسالها بشكل صحيح
+  
     try {
       await onSave(dataToSend);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Program updated successfully!',
+      });
       onClose();
     } catch (error) {
       console.error('Error saving program:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!',
+      });
     }
   };
 
@@ -76,6 +93,19 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
 
           <div className="modal-body">
             <form onSubmit={handleSubmit} encType="multipart/form-data">
+              {/* Title Input */}
+              <div className="mb-4">
+                <input
+                  type="text"
+                  name="title"
+                  className="form-control form-control-lg text-center"
+                  value={formData.title || ''}
+                  onChange={handleChange}
+                  placeholder="Program Title"
+                  required
+                />
+              </div>
+
               {/* Image Upload Section */}
               <div className="position-relative mb-4 d-flex flex-column justify-content-center align-items-center">
                 {previewImage || program.image ? (
@@ -92,13 +122,13 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
                   />
                 ) : (
                   <div className="d-flex justify-content-center align-items-center"
-                       style={{
-                         height: '150px',
-                         width: '150px',
-                         borderRadius: '10px',
-                         backgroundColor: '#f8f9fa',
-                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                       }}>
+                    style={{
+                      height: '150px',
+                      width: '150px',
+                      borderRadius: '10px',
+                      backgroundColor: '#f8f9fa',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                    }}>
                     <Image size={40} className="text-muted" />
                   </div>
                 )}
@@ -224,6 +254,37 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
                 </div>
               </div>
 
+              {/* Modules and What You'll Learn Card */}
+              <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f9f9ff 0%, #ffffff 100%)' }}>
+                <div className="card-body">
+                  <h3 className="fs-5 fw-bold mb-4 text-info">Program Modules & Learnings</h3>
+                  <div className="d-flex flex-column gap-3">
+                    <div className="mt-2">
+                      <small className="text-muted d-block mb-2">Modules</small>
+                      <textarea
+                        name="modules"
+                        className="form-control"
+                        value={formData.modules || ''}
+                        onChange={handleChange}
+                        rows="4"
+                        placeholder="Enter program modules..."
+                      ></textarea>
+                    </div>
+                    <div className="mt-2">
+                      <small className="text-muted d-block mb-2">What You'll Learn</small>
+                      <textarea
+                        name="what_youll_learn"
+                        className="form-control"
+                        value={formData.what_youll_learn || ''}
+                        onChange={handleChange}
+                        rows="4"
+                        placeholder="Enter learning objectives..."
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {/* Cost and Description Card */}
               <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0fff4 0%, #ffffff 100%)' }}>
                 <div className="card-body">
@@ -271,6 +332,7 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
                         onChange={handleChange}
                         required
                         rows="4"
+                        placeholder="Enter program description..."
                       ></textarea>
                     </div>
                   </div>
@@ -280,14 +342,15 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
               <div className="text-center mt-4">
                 <select
                   name="status"
-                  className={`form-select w-auto mx-auto ${formData.status === 'active' ? 'bg-success' : 'bg-danger'}`}
+                  className="form-select w-auto mx-auto"
                   value={formData.status || ''}
                   onChange={handleChange}
                   required
                   style={{
                     color: 'white',
                     borderRadius: '20px',
-                    padding: '5px 20px'
+                    padding: '5px 20px',
+                    backgroundColor: formData.status === 'active' ? '#28a745' : '#dc3545'
                   }}
                 >
                   <option value="active">Active</option>
