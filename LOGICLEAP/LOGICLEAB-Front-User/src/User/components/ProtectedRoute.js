@@ -1,14 +1,15 @@
+// ProtectedRoute.js
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
-const ProtectedRoute = ({ children, isLoggedIn }) => {
+const ProtectedRoute = ({ children }) => {
   const location = useLocation();
-
-  if (!isLoggedIn) {
-    // إعادة التوجيه إلى صفحة تسجيل الدخول مع حفظ المسار الحالي
+  const token = localStorage.getItem('auth-token');
+  
+  if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-
+  
   return children;
 };
 

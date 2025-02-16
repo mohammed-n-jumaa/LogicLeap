@@ -54,11 +54,7 @@ function Features() {
                 <p className="fst-italic">
                   We specialize in creating responsive and user-friendly websites that provide seamless experiences across all devices. Our team focuses on delivering high-performance solutions tailored to meet your business needs.
                 </p>
-                <ul>
-                  <li><i className="bi bi-check2-all"></i> <span>Custom website design and development.</span></li>
-                  <li><i className="bi bi-check2-all"></i> <span>Mobile-responsive and cross-platform compatibility.</span></li>
-                  <li><i className="bi bi-check2-all"></i> <span>SEO optimization and performance tuning.</span></li>
-                </ul>
+               
                 <div className="hero-buttons">
                   <a href="/registrationServices" className="btn btn-primary me-0 me-sm-2 mx-1 mt-1">Contact us</a>
                 </div>

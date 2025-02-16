@@ -136,7 +136,7 @@ const CustomServiceForm = () => {
           </div> */}
           <div className="mb-3">
             <label htmlFor="servicebudget" className="form-label">
-              Nots
+              Notes
             </label>
             <input
               type="text"

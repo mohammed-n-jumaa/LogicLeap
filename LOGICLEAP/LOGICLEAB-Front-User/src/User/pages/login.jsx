@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import '../assets/css/reg.css';
 import Header from '../components/header';
 import { useNavigate, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const LoginPage = ({ onLogin }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,7 +10,7 @@ const LoginPage = ({ onLogin }) => {
     email: '',
     password: ''
   });
-  const [error, setError] = useState(null); // حالة لإدارة الأخطاء
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -21,7 +22,7 @@ const LoginPage = ({ onLogin }) => {
     }
 
     setIsLoading(true);
-    setError(null); // إعادة تعيين حالة الخطأ
+    setError(null);
 
     try {
       const response = await fetch('http://localhost:8000/api/login', {
@@ -35,14 +36,23 @@ const LoginPage = ({ onLogin }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // التحقق من أن دور المستخدم هو "user"
         if (data.user.role === 'user') {
           localStorage.setItem('auth-token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          onLogin(); // تحديث حالة تسجيل الدخول
-          alert('Login successful!');
+          onLogin();
+          
+          // Replace alert with SweetAlert2
+          await Swal.fire({
+            title: 'Welcome!',
+            text: 'You have successfully logged in',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#28a745',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+          });
 
-          // إعادة التوجيه إلى الصفحة السابقة أو الصفحة الرئيسية
           const from = location.state?.from?.pathname || '/home';
           navigate(from, { replace: true });
         } else {
@@ -175,7 +185,7 @@ const LoginPage = ({ onLogin }) => {
             <div className="logo-text">User Portal</div>
           </div>
 
-          {error && <div className="error-message">{error}</div>} {/* عرض رسائل الأخطاء */}
+          {error && <div className="error-message">{error}</div>}
 
           <form onSubmit={handleSubmit}>
             <div className="form-floating">

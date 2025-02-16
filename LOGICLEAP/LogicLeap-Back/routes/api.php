@@ -31,8 +31,10 @@ use App\Http\Controllers\AuthController;
 // Authentication Routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
 Route::get('/me', [UserController::class, 'me'])->middleware('auth:sanctum');
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/validate-register', [AuthController::class, 'validateRegister']);
 // Public Routes (No Protection)
 Route::prefix('programs')->group(function () {
     Route::get('/', [ProgramController::class, 'index']);
