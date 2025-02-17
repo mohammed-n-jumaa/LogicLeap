@@ -60,7 +60,7 @@ function Profile() {
 
   return (
     <div className="profile-container">
-       <Header/>
+      <Header/>
       <div className="profile-header">
         <div className="profile-cover"></div>
         <div className="profile-avatar">
@@ -142,15 +142,26 @@ function Profile() {
                       </div>
                     </div>
                   </div>
-                  <a 
-                    href={program.zoom_link} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="join-button"
-                  >
-                    <i className="bi bi-camera-video"></i>
-                    Join Session Now
-                  </a>
+                  <div className="button-group">
+                    <a 
+                      href={program.zoom_link} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="join-button"
+                    >
+                      <i className="bi bi-camera-video"></i>
+                      Join Session Now
+                    </a>
+                    <a 
+                      href={`https://wa.me/${program.whatsapp_number}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="whatsapp-button"
+                    >
+                      <i className="bi bi-whatsapp"></i>
+                      Contact on WhatsApp
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
@@ -333,7 +344,12 @@ function Profile() {
             font-weight: 500;
           }
 
-          .join-button {
+          .button-group {
+            display: flex;
+            gap: 15px; /* Space between buttons */
+          }
+
+          .join-button, .whatsapp-button {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -345,14 +361,13 @@ function Profile() {
             border-radius: 8px;
             transition: background-color 0.3s ease;
             font-weight: 500;
-            margin-top: 15px;
           }
 
-          .join-button:hover {
+          .join-button:hover, .whatsapp-button:hover {
             background: #8fb77a;
           }
 
-          .join-button i {
+          .join-button i, .whatsapp-button i {
             font-size: 18px;
           }
 
@@ -384,7 +399,6 @@ function Profile() {
         `}
       </style>
       <Footer/>
-
     </div>
   );
 }

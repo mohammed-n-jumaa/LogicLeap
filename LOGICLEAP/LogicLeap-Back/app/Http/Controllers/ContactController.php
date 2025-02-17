@@ -19,6 +19,7 @@ class ContactController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email',
             'phone' => 'required|string|max:20',
+            'message' => 'nullable|string',
         ]);
 
         $contact = Contact::create($request->all());
