@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     protected $dates = ['deleted_at'];
 
-    // العلاقات
+    
     public function registrations()
     {
         return $this->hasMany(Registration::class);

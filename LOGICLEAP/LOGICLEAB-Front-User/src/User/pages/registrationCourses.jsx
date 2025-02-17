@@ -120,20 +120,6 @@ const CustomServiceForm = () => {
               <option value="other">Other</option>
             </select>
           </div>
-          {/* <div className="mb-3">
-            <label htmlFor="serviceDetails" className="form-label">
-              lavel
-            </label>
-            <textarea
-              className="form-control"
-              id="serviceDetails"
-              rows="4"
-              value={serviceDetails}
-              onChange={(e) => setServiceDetails(e.target.value)}
-              required
-              placeholder="Describe your custom service requirements"
-            ></textarea>
-          </div> */}
           <div className="mb-3">
             <label htmlFor="servicebudget" className="form-label">
               Notes

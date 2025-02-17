@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Http\Requests\RegisterUserRequest;  // Add this import
+use App\Http\Requests\RegisterUserRequest;  
 use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
@@ -80,7 +80,7 @@ class AuthController extends Controller
     }
     
 
-    // التحقق من المدخلات أثناء الكتابة
+    
     public function validateRegister(Request $request)
     {
         $validator = \Validator::make($request->all(), [
