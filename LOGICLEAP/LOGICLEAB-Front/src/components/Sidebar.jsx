@@ -136,6 +136,14 @@ const Sidebar = () => {
                                 <span className="hide-menu">FAQ Management</span>
                             </Link>
                         </li>
+                        <li className={`sidebar-item ${location.pathname === '/gallery' ? 'active' : ''}`}>
+                            <Link className="sidebar-link" to="/gallery">
+                                <span>
+                                    <Icon icon="mdi:help-circle-outline" className="fs-6" />
+                                </span>
+                                <span className="hide-menu">Gallery Management</span>
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
             </div>

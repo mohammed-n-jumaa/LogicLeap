@@ -8,14 +8,12 @@ import Swal from 'sweetalert2';
 
 const ServiceManagement = () => {
     const [services, setServices] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [modalService, setModalService] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [editService, setEditService] = useState({
         id: '',
         title: '',
         description: '',
-        category: '',
         price: '',
         status: '',
     });
@@ -29,20 +27,14 @@ const ServiceManagement = () => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const [servicesResponse, categoriesResponse] = await Promise.all([
-                    fetch('http://localhost:8000/api/site-services'),
-                    fetch('http://localhost:8000/api/categories')
-                ]);
+                const response = await fetch('http://localhost:8000/api/site-services');
 
-                if (!servicesResponse.ok || !categoriesResponse.ok) {
+                if (!response.ok) {
                     throw new Error('Failed to fetch data');
                 }
 
-                const servicesData = await servicesResponse.json();
-                const categoriesData = await categoriesResponse.json();
-
+                const servicesData = await response.json();
                 setServices(servicesData);
-                setCategories(categoriesData);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 Swal.fire('Error', 'Failed to load data', 'error');
@@ -62,7 +54,6 @@ const ServiceManagement = () => {
     const filteredServices = services.filter(service => 
         service.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        service.category?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.price?.toString().includes(searchQuery.toLowerCase()) ||
         service.status?.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -202,7 +193,6 @@ const ServiceManagement = () => {
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Title</th>
                                                 <th scope="col">Description</th>
-                                                <th scope="col">Category</th>
                                                 <th scope="col">Price</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col" className="text-center">Actions</th>
@@ -214,7 +204,6 @@ const ServiceManagement = () => {
                                                     <td>{service.id}</td>
                                                     <td>{service.title}</td>
                                                     <td>{service.description}</td>
-                                                    <td>{service.category ? service.category.name : 'Unknown'}</td>
                                                     <td>{service.price}</td>
                                                     <td>
                                                         <span className={`badge bg-${service.status === 'active' ? 'success' : 'danger'}`}>
@@ -291,22 +280,6 @@ const ServiceManagement = () => {
                                                                 onChange={(e) => setEditService({ ...editService, description: e.target.value })}
                                                                 required
                                                             ></textarea>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label htmlFor="serviceCategory" className="form-label">Category</label>
-                                                            <select
-                                                                className="form-select"
-                                                                value={editService.category}
-                                                                onChange={(e) => setEditService({ ...editService, category: e.target.value })}
-                                                                required
-                                                            >
-                                                                <option value="" disabled>Select Category</option>
-                                                                {categories.map((category) => (
-                                                                    <option key={category.id} value={category.id}>
-                                                                        {category.name}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
                                                         </div>
                                                         <div className="mb-3">
                                                             <label htmlFor="servicePrice" className="form-label">Price</label>

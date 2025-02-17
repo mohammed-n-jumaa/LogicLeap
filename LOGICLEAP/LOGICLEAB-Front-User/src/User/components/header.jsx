@@ -6,9 +6,9 @@ function Header({ onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
-    // Check authentication status when component mounts and when localStorage changes
     const checkAuth = () => {
       const token = localStorage.getItem('auth-token');
       const user = localStorage.getItem('user');
@@ -66,43 +66,39 @@ function Header({ onLogout }) {
         </nav>
 
         {isLoggedIn ? (
-          <button 
-            className="btn-getstarted" 
-            onClick={handleLogout}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: '#dc3545',
-              border: 'none',
-              padding: '8px 20px',
-              borderRadius: '50px',
-              color: '#fff',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            <i className="bi bi-box-arrow-right"></i>
-            Logout
-          </button>
+          <div className="dropdown">
+            <button 
+              className="btn-icon"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <i className="bi bi-person-circle fs-4"></i>
+            </button>
+            <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+              <li>
+                <Link to="/profile" className="dropdown-item">
+                  <i className="bi bi-person me-2"></i>
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <button onClick={handleLogout} className="dropdown-item text-danger">
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </div>
         ) : (
-          <Link 
-            className="btn-getstarted" 
-            to="/login"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              background: '#a7d477',
-              padding: '8px 20px',
-              borderRadius: '50px',
-              color: '#fff',
-              textDecoration: 'none',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            <i className="bi bi-person-plus"></i>
-            Login
-          </Link>
+          <div className="auth-buttons">
+            <Link to="/login" className="btn-auth login me-2">
+              <i className="bi bi-box-arrow-in-right"></i>
+              <span>Login</span>
+            </Link>
+            <Link to="/register" className="btn-auth register">
+              <i className="bi bi-person-plus"></i>
+              <span>Register</span>
+            </Link>
+          </div>
         )}
       </div>
 
@@ -135,7 +131,86 @@ function Header({ onLogout }) {
             font-weight: 600;
           }
 
-          .btn-getstarted:hover {
+          .dropdown {
+            position: relative;
+          }
+
+          .btn-icon {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: 50%;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+
+          .btn-icon:hover {
+            background: #f5f5f5;
+          }
+
+          .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            display: none;
+            min-width: 180px;
+          }
+
+          .dropdown-menu.show {
+            display: block;
+          }
+
+          .dropdown-item {
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.3s ease;
+            border: none;
+            width: 100%;
+            text-align: left;
+            background: none;
+          }
+
+          .dropdown-item:hover {
+            background: #f5f5f5;
+          }
+
+          .dropdown-item.text-danger {
+            color: #dc3545;
+          }
+
+          .auth-buttons {
+            display: flex;
+            gap: 0.5rem;
+          }
+
+          .btn-auth {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+          }
+
+          .btn-auth.login {
+            background: #a7d477;
+          }
+
+          .btn-auth.register {
+            background: #4a6741;
+          }
+
+          .btn-auth:hover {
             opacity: 0.9;
             transform: translateY(-1px);
           }

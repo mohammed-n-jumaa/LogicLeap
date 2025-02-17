@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-import profileImage from '../assets/images/profile/mohammed.jpg';
+import profileImage from '../assets/images/profile/Userpfp.jpg';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -69,7 +69,6 @@ const Profile = () => {
                     <label htmlFor="profileRole" className="form-label">Role</label>
                     <input type="text" className="form-control" id="profileRole" value={user.role} disabled />
                   </div>
-                  <Link to="/edit-profile" className="btn btn-primary">Edit Profile</Link> 
                 </div>
               </div>
             </div>

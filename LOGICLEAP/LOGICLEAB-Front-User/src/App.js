@@ -20,6 +20,7 @@ import RegistrationCourses from './User/pages/registrationCourses';
 import RegistrationServices from './User/pages/registrationServices';
 import Courses2 from './User/pages/courses2';
 import Register from './User/pages/register';
+import Profile from './User/pages/Profile'; // Add this import
 
 // Components
 import Header from './User/components/header';
@@ -90,6 +91,13 @@ function App() {
                 <Register />
             } 
           />
+
+          {/* Add Profile Route */}
+          <Route path='/profile' element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
 
           {/* Protected Page Routes */}
           <Route path='/about' element={

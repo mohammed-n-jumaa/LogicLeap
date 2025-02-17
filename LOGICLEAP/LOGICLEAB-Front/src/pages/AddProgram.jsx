@@ -300,6 +300,34 @@ const AddProgram = () => {
                           ></textarea>
                         </div>
                       </div>
+
+                      {/* Program Terms Field */}
+                      <div className="col-md-12">
+                        <div className="mb-3">
+                          <label htmlFor="program_terms" className="form-label">Program Terms</label>
+                          <textarea
+                            className="form-control border-0 shadow-sm"
+                            id="program_terms"
+                            name="program_terms"
+                            rows="3"
+                            placeholder="Enter program terms (optional)"
+                          ></textarea>
+                        </div>
+                      </div>
+
+                      {/* WhatsApp Link Field */}
+                      <div className="col-md-12">
+                        <div className="mb-3">
+                          <label htmlFor="whatsapp_link" className="form-label">WhatsApp Link</label>
+                          <input
+                            type="url"
+                            className="form-control border-0 shadow-sm"
+                            id="whatsapp_link"
+                            name="whatsapp_link"
+                            placeholder="Enter WhatsApp link (optional)"
+                          />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="text-center mt-4">

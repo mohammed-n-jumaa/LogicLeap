@@ -25,7 +25,9 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
         zoom_link: program.zoom_link || '',
         location: program.location,
         modules: program.modules || '',
-        what_youll_learn: program.what_youll_learn || ''
+        what_youll_learn: program.what_youll_learn || '',
+        program_terms: program.program_terms || '',
+        whatsapp_link: program.whatsapp_link || ''
       }));
       setPreviewImage(program.image || null);
     }
@@ -34,19 +36,19 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const dataToSend = new FormData();
-  
+
     Object.keys(formData).forEach(key => {
       if (formData[key] !== null && formData[key] !== undefined) {
         dataToSend.append(key, formData[key]);
       }
     });
-  
+
     if (imageFile) {
       dataToSend.append('image', imageFile);
     }
-  
-    console.log([...dataToSend.entries()]); // هذا السطر للتأكد من أن البيانات يتم إرسالها بشكل صحيح
-  
+
+    console.log([...dataToSend.entries()]); // For debugging
+
     try {
       await onSave(dataToSend);
       Swal.fire({
@@ -245,7 +247,21 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
                             >
                               <option value="online">Online</option>
                               <option value="onsite">Onsite</option>
+                              <option value="hybrid">Hybrid</option>
                             </select>
+                          </div>
+                        </div>
+                        <div className="d-flex align-items-center gap-2">
+                          <Tag className="text-purple" size={20} />
+                          <div className="flex-grow-1">
+                            <small className="text-muted d-block">WhatsApp Link</small>
+                            <input
+                              type="url"
+                              name="whatsapp_link"
+                              className="form-control"
+                              value={formData.whatsapp_link || ''}
+                              onChange={handleChange}
+                            />
                           </div>
                         </div>
                       </div>
@@ -281,6 +297,23 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
                         placeholder="Enter learning objectives..."
                       ></textarea>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Program Terms Card */}
+              <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)' }}>
+                <div className="card-body">
+                  <h3 className="fs-5 fw-bold mb-4 text-info">Program Terms</h3>
+                  <div className="mt-2">
+                    <textarea
+                      name="program_terms"
+                      className="form-control"
+                      value={formData.program_terms || ''}
+                      onChange={handleChange}
+                      rows="4"
+                      placeholder="Enter program terms (optional)"
+                    ></textarea>
                   </div>
                 </div>
               </div>

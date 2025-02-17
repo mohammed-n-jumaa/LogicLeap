@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-import profileImage from '../assets/images/profile/mohammed.jpg';
+import profileImage from '../assets/images/profile/Userpfp.jpg';
 
 const EditProfile = () => {
 const [userId] = useState("1");

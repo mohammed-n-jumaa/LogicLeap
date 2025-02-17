@@ -125,6 +125,7 @@ const App = () => {
                         path="/faq-management" 
                         element={<ProtectedRoute element={<FAQManagement />} requiredRole={['admin', 'super_admin']} />} 
                     />
+                  
                 </Routes>
             </div>
         </div>

@@ -15,11 +15,10 @@ class Program extends Model
         'title', 'description', 'category_id', 'start_date', 'end_date', 
         'duration', 'cost', 'price', 'status', 'mode', 'zoom_link', 
         'location', 'image','modules',
-        'what_youll_learn'
+        'what_youll_learn','program_terms', 'whatsapp_link' 
     ];
     protected $table = 'programs';
     
-   // في ملف Program.php
 public function category()
 {
     return $this->belongsTo(Category::class, 'category_id');
@@ -29,5 +28,9 @@ public function category()
     {
         return $this->hasMany(Registration::class);
     }
+    public function gallery()
+{
+    return $this->hasMany(Gallery::class);
+}
     
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Program;
@@ -29,17 +30,19 @@ class ProgramController extends Controller
             'location' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'modules' => 'nullable|string',
-            'what_youll_learn' => 'nullable|string'
+            'what_youll_learn' => 'nullable|string',
+            'program_terms' => 'nullable|string', // التحقق من صحة البيانات الجديدة
+            'whatsapp_link' => 'nullable|url' // التحقق من صحة البيانات الجديدة
         ]);
-    
+
         $data = $request->except('image');
-        
+
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('programs', 'public');
         }
-    
+
         $program = Program::create($data);
-    
+
         return response()->json([
             'message' => 'Program created successfully', 
             'program' => $program->load('category')
@@ -71,7 +74,9 @@ class ProgramController extends Controller
             'location' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'modules' => 'nullable|string',
-            'what_youll_learn' => 'nullable|string'
+            'what_youll_learn' => 'nullable|string',
+            'program_terms' => 'nullable|string', 
+            'whatsapp_link' => 'nullable|url' 
         ]);
 
         $data = $request->except('image');

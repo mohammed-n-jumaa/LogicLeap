@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '../assets/css/styles.min.css';
@@ -9,24 +9,12 @@ const AddService = () => {
     const [service, setService] = useState({
         title: '',
         description: '',
-        category_id: '',
         price: '',
         status: 'active',
     });
 
-    const [categories, setCategories] = useState([]);
     const [alertMessage, setAlertMessage] = useState(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        axios.get('http://localhost:8000/api/categories')
-            .then((response) => {
-                setCategories(response.data);
-            })
-            .catch((error) => {
-                console.error('There was an error fetching categories:', error);
-            });
-    }, []);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -76,7 +64,7 @@ const AddService = () => {
 
                                     <form onSubmit={handleSubmit} className="mt-4">
                                         <div className="row g-4">
-                                            <div className="col-md-6">
+                                            <div className="col-12">
                                                 <div className="form-floating mb-3">
                                                     <input
                                                         type="text"
@@ -90,28 +78,6 @@ const AddService = () => {
                                                     />
                                                     <label htmlFor="title" className="text-muted">
                                                         <i className="fas fa-tag me-2"></i>Service Title
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-floating mb-3">
-                                                    <select
-                                                        className="form-select border-0 shadow-sm"
-                                                        id="category_id"
-                                                        value={service.category_id}
-                                                        onChange={handleChange}
-                                                        required
-                                                        style={{ backgroundColor: 'rgba(255, 76, 76, 0.03)' }}
-                                                    >
-                                                        <option value="" disabled>Select Category</option>
-                                                        {categories.map((category) => (
-                                                            <option key={category.id} value={category.id}>
-                                                                {category.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                    <label htmlFor="category_id" className="text-muted">
-                                                        <i className="fas fa-folder me-2"></i>Service Category
                                                     </label>
                                                 </div>
                                             </div>

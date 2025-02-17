@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Layers, Clipboard } from 'lucide-react';
+import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Layers } from 'lucide-react';
 
 const ProgramDetailsModal = ({ program, onClose, categories }) => {
   if (!program) return null;
@@ -17,7 +17,6 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
     }
     return 'Category not specified';
   };
-
 
   return (
     <div className="modal fade show" style={{ display: 'block' }}>
@@ -118,29 +117,45 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
                           )}
                         </div>
                       </div>
-                      <div
-                        className="d-flex align-items-center gap-2"
-                        style={{ color: '#c2cad6' }}
-                      >
+                      <div className="d-flex align-items-center gap-2" style={{ color: '#c2cad6' }}>
                         <Tag className="text-purple" size={20} />
                         <div>
-                          <small
-                            className="text-muted d-block"
-                            style={{ color: '#c2cad6' }}
-                          >
-                            Attendance Mode
-                          </small>
-                          <span
-                            className="badge bg-light mt-1 fw-bold"
-                            style={{ color: '#c2cad6', backgroundColor: '#f8f9fa' }}
-                          >
+                          <small className="text-muted d-block">Attendance Mode</small>
+                          <span className="badge bg-light mt-1 fw-bold" style={{ color: '#c2cad6', backgroundColor: '#f8f9fa' }}>
                             {program.mode}
                           </span>
                         </div>
                       </div>
-
+                      <div className="d-flex align-items-center gap-2" style={{ color: '#c2cad6' }}>
+                        <Tag className="text-purple" size={20} />
+                        <div>
+                          <small className="text-muted d-block">WhatsApp Link</small>
+                          {program.whatsapp_link ? (
+                            <a
+                              href={program.whatsapp_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-purple text-decoration-none"
+                            >
+                              Contact on WhatsApp
+                            </a>
+                          ) : (
+                            <span className="fw-medium">Not available</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Program Terms Card */}
+            <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)' }}>
+              <div className="card-body">
+                <h3 className="fs-5 fw-bold mb-4 text-info">Program Terms</h3>
+                <div className="mt-2">
+                  <p className="text-gray-700 lh-base">{program.program_terms || 'Not specified'}</p>
                 </div>
               </div>
             </div>

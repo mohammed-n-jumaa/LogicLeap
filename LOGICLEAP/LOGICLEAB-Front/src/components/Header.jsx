@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; 
-import profileImage from '../assets/images/profile/mohammed.jpg';
+import profileImage from '../assets/images/profile/Userpfp.jpg';
 import axios from 'axios';
 
 const Header = () => {
