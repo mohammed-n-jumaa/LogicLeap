@@ -13,7 +13,7 @@ const Profile = () => {
         const response = await fetch('http://localhost:8000/api/me', {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // استخدم التوكن المخزن
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, 
             'Content-Type': 'application/json',
           },
         });

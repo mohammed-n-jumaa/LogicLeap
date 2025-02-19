@@ -5,12 +5,12 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Icon } from '@iconify/react';
 
 const Sidebar = () => {
-    const location = useLocation(); 
+    const location = useLocation();
 
     return (
         <aside className="left-sidebar">
             <div>
-            <div className="brand-logo d-flex align-items-center justify-content-between">
+                <div className="brand-logo d-flex align-items-center justify-content-between">
                     <span className="hide-menu logo">
                         <span className="l-logic">L</span>
                         <span className="ogic">ogic</span>
@@ -139,11 +139,12 @@ const Sidebar = () => {
                         <li className={`sidebar-item ${location.pathname === '/gallery' ? 'active' : ''}`}>
                             <Link className="sidebar-link" to="/gallery">
                                 <span>
-                                    <Icon icon="mdi:help-circle-outline" className="fs-6" />
+                                    <Icon icon="mdi:image-outline" className="fs-6" />
                                 </span>
                                 <span className="hide-menu">Gallery Management</span>
                             </Link>
                         </li>
+
                     </ul>
                 </nav>
             </div>

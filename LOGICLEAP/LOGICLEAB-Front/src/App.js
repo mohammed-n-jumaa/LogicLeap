@@ -21,7 +21,7 @@ import SuccessStories from './pages/SuccessStories';
 import FAQManagement from './pages/FAQManagement'; 
 import Login from './pages/Login'; 
 import ProtectedRoute from './ProtectedRoute'; 
-
+import Gallery from './pages/Gallery';
 const App = () => {
     const location = useLocation(); 
     
@@ -125,7 +125,10 @@ const App = () => {
                         path="/faq-management" 
                         element={<ProtectedRoute element={<FAQManagement />} requiredRole={['admin', 'super_admin']} />} 
                     />
-                  
+                                      <Route 
+                        path="/gallery"
+                        element={<ProtectedRoute element={<Gallery />} requiredRole={['admin', 'super_admin']}/>}
+                    />
                 </Routes>
             </div>
         </div>

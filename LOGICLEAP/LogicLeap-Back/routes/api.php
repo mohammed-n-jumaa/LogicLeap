@@ -39,10 +39,11 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/validate-register', [AuthController::class, 'validateRegister']);
 // Public Routes (No Protection)
 
-Route::post('/gallery', [GalleryController::class, 'store']);
-Route::get('/gallery/{programId}', [GalleryController::class, 'index']);
-Route::patch('/gallery/{id}/status', [GalleryController::class, 'updateStatus']);
-Route::delete('/gallery/{id}/soft-delete', [GalleryController::class, 'softDelete']);
+
+Route::get('/galleries', [GalleryController::class, 'index']);
+Route::post('/galleries', [GalleryController::class, 'store']);
+Route::put('/galleries/{id}', [GalleryController::class, 'update']);
+Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
 
 Route::prefix('programs')->group(function () {
     Route::get('/', [ProgramController::class, 'index']);
@@ -132,14 +133,7 @@ Route::prefix('faqs')->group(function () {
     Route::put('/{id}', [FAQController::class, 'update']);
     Route::delete('/{id}', [FAQController::class, 'softDelete']);
 });
-// Gallery Routes
-Route::prefix('gallery')->group(function () {
-    Route::get('/', [GalleryController::class, 'index']);
-    Route::post('/', [GalleryController::class, 'store']);
-    Route::get('/{programId}', [GalleryController::class, 'show']);
-    Route::patch('/{id}/status', [GalleryController::class, 'updateStatus']);
-    Route::delete('/{id}/soft-delete', [GalleryController::class, 'softDelete']);
-});
+
 // Dashboard Routes
 Route::get('/latest-registrations', [DashboardController::class, 'latestRegistrations']);
 Route::get('/most-requested', [DashboardController::class, 'mostRequested']);

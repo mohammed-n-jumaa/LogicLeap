@@ -4,78 +4,196 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Gallery;
+use App\Models\GalleryImage;
+use App\Models\Program;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class GalleryController extends Controller
 {
     public function index()
     {
-        $galleries = Gallery::all();
-        return response()->json($galleries);
+        try {
+            $galleries = Gallery::with(['program', 'images'])->get();
+            
+            $galleries = $galleries->map(function($gallery) {
+                return [
+                    'id' => $gallery->id,
+                    'program_id' => $gallery->program_id,
+                    'program_name' => $gallery->program ? $gallery->program->title : 'Unknown',
+                    'images' => $gallery->images->map(function($image) {
+                        return [
+                            'id' => $image->id,
+                            'image_path' => $image->image_path
+                        ];
+                    }),
+                    'status' => $gallery->status,
+                    'created_at' => $gallery->created_at,
+                    'updated_at' => $gallery->updated_at
+                ];
+            });
+            
+            return response()->json($galleries);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function store(Request $request)
-    {
+{
+    try {
         $request->validate([
-            'program_id' => 'required|integer',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'program_id' => 'required|exists:programs,id',
+            'images' => 'required|array',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:active,inactive',
         ]);
 
-        $imagePath = $request->file('image')->store('gallery', 'public');
+        DB::beginTransaction();
 
-        $gallery = Gallery::create([
+        // تحقق أولاً إذا كانت هناك صور
+        if (!$request->hasFile('images')) {
+            return response()->json(['error' => 'No valid images provided'], 422);
+        }
+
+        // استخدم الإدراج المباشر مع تحديد image_path
+        $firstImage = $request->file('images')[0];
+        $firstImagePath = $firstImage->store('gallery', 'public');
+        
+        // استخدم الإدراج المباشر بأسلوب DB بدلاً من Eloquent create()
+        $galleryId = DB::table('gallery')->insertGetId([
             'program_id' => $request->program_id,
-            'image_path' => $imagePath,
             'status' => $request->status,
+            'image_path' => $firstImagePath,
+            'created_at' => now(),
+            'updated_at' => now()
         ]);
-
-        return response()->json($gallery, 201);
+        
+        // أضف جميع الصور إلى جدول gallery_images
+        foreach ($request->file('images') as $image) {
+            $imagePath = $image->store('gallery', 'public');
+            GalleryImage::create([
+                'gallery_id' => $galleryId,
+                'image_path' => $imagePath
+            ]);
+        }
+        
+        DB::commit();
+        
+        // استعلم عن السجل المنشأ مع العلاقات
+        $gallery = Gallery::with(['program', 'images'])->find($galleryId);
+        
+        return response()->json([
+            'id' => $gallery->id,
+            'program_id' => $gallery->program_id,
+            'program_name' => $gallery->program ? $gallery->program->title : 'Unknown',
+            'images' => $gallery->images->map(function($image) {
+                return [
+                    'id' => $image->id,
+                    'image_path' => $image->image_path
+                ];
+            }),
+            'status' => $gallery->status,
+            'created_at' => $gallery->created_at,
+            'updated_at' => $gallery->updated_at
+        ], 201);
+        
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['error' => $e->getMessage()], 422);
     }
+}
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'program_id' => 'sometimes|integer',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'status' => 'sometimes|in:active,inactive',
-        ]);
+        try {
+            $request->validate([
+                'program_id' => 'required|exists:programs,id',
+                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'status' => 'required|in:active,inactive',
+                'delete_image_ids' => 'nullable|array',
+                'delete_image_ids.*' => 'exists:gallery_images,id'
+            ]);
 
-        $gallery = Gallery::findOrFail($id);
+            DB::beginTransaction();
 
-        if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($gallery->image_path);
-            $imagePath = $request->file('image')->store('gallery', 'public');
-            $gallery->image_path = $imagePath;
-        }
-
-        if ($request->has('program_id')) {
+            $gallery = Gallery::findOrFail($id);
             $gallery->program_id = $request->program_id;
-        }
-
-        if ($request->has('status')) {
             $gallery->status = $request->status;
+            $gallery->save();
+
+            // Delete selected images
+            if ($request->has('delete_image_ids')) {
+                $imagesToDelete = GalleryImage::whereIn('id', $request->delete_image_ids)
+                    ->where('gallery_id', $gallery->id)
+                    ->get();
+
+                foreach ($imagesToDelete as $image) {
+                    if (Storage::disk('public')->exists($image->image_path)) {
+                        Storage::disk('public')->delete($image->image_path);
+                    }
+                    $image->delete();
+                }
+            }
+
+            // Add new images
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $imagePath = $image->store('gallery', 'public');
+                    GalleryImage::create([
+                        'gallery_id' => $gallery->id,
+                        'image_path' => $imagePath
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            $gallery->load(['program', 'images']);
+            
+            return response()->json([
+                'id' => $gallery->id,
+                'program_id' => $gallery->program_id,
+                'program_name' => $gallery->program ? $gallery->program->title : 'Unknown',
+                'images' => $gallery->images->map(function($image) {
+                    return [
+                        'id' => $image->id,
+                        'image_path' => $image->image_path
+                    ];
+                }),
+                'status' => $gallery->status,
+                'created_at' => $gallery->created_at,
+                'updated_at' => $gallery->updated_at
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 422);
         }
-
-        $gallery->save();
-
-        return response()->json($gallery);
     }
 
     public function destroy($id)
     {
-        $gallery = Gallery::findOrFail($id);
-        $gallery->delete();
+        try {
+            DB::beginTransaction();
 
-        return response()->json(null, 204);
-    }
+            $gallery = Gallery::findOrFail($id);
 
-    public function softDelete($id)
-    {
-        $gallery = Gallery::findOrFail($id);
-        $gallery->status = 'inactive';
-        $gallery->save();
+            // Delete all associated images
+            foreach ($gallery->images as $image) {
+                if (Storage::disk('public')->exists($image->image_path)) {
+                    Storage::disk('public')->delete($image->image_path);
+                }
+            }
 
-        return response()->json(null, 204);
+            $gallery->images()->delete();
+            $gallery->delete();
+
+            DB::commit();
+
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

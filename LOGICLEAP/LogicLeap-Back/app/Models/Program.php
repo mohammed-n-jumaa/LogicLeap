@@ -28,9 +28,9 @@ public function category()
     {
         return $this->hasMany(Registration::class);
     }
-    public function gallery()
-{
-    return $this->hasMany(Gallery::class);
-}
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class);
+    }
     
 }
