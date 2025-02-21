@@ -17,6 +17,7 @@ use App\Http\Controllers\FAQController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\StatisticController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,6 +133,16 @@ Route::prefix('faqs')->group(function () {
     Route::post('/', [FAQController::class, 'store']);
     Route::put('/{id}', [FAQController::class, 'update']);
     Route::delete('/{id}', [FAQController::class, 'softDelete']);
+});
+
+// Statistics API routes
+// To this:
+Route::prefix('statistics')->group(function () {
+    Route::get('/', [StatisticController::class, 'index']);
+    Route::post('/', [StatisticController::class, 'store']);
+    Route::get('/{id}', [StatisticController::class, 'show']);
+    Route::put('/{id}', [StatisticController::class, 'update']);
+    Route::delete('/{id}', [StatisticController::class, 'destroy']);
 });
 
 // Dashboard Routes

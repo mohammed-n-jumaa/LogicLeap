@@ -141,4 +141,4 @@ function serviceRequest() {
   )
 }
 
-export default serviceRequest
+export default serviceRequest;

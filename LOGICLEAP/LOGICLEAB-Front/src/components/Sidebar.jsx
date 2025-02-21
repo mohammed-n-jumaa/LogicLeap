@@ -144,7 +144,14 @@ const Sidebar = () => {
                                 <span className="hide-menu">Gallery Management</span>
                             </Link>
                         </li>
-
+                        <li className={`sidebar-item ${location.pathname === '/StatisticsManagement' ? 'active' : ''}`}>
+                            <Link className="sidebar-link" to="/StatisticsManagement">
+                                <span>
+                                <Icon icon="mdi:chart-bar" className="fs-6" />
+                                </span>
+                                <span className="hide-menu">Statistics Management</span>
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
             </div>

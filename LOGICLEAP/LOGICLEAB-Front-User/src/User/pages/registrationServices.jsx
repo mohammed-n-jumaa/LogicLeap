@@ -1,27 +1,40 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Navbar, Container,Modal } from 'react-bootstrap';
+import { Button, Navbar, Container, Modal } from 'react-bootstrap';
 import Header from '../components/header';
 import Footer from '../components/footer';
 
 const CustomServiceForm = () => {
   const [showModal, setShowModal] = useState(false);
-  const [serviceName, setServiceName] = useState('');
-  const [serviceEmail, setServiceEmail] = useState('');
-  const [serviceType, setServiceType] = useState('');
-  const [serviceDetails, setServiceDetails] = useState('');
-  const [serviceBudget, setServiceBudget] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    service_type: '',
+    details: '',
+    status: 'pending', // Default status
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission logic here
+    // Handle form submission logic here (e.g., sending data to the server)
+    console.log('Form Data:', formData);
+
     setShowModal(true); // Show success modal
-    // Clear form fields
-    setServiceName('');
-    setServiceEmail('');
-    setServiceType('');
-    setServiceDetails('');
-    setServiceBudget('');
+    // Reset form fields
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      service_type: '',
+      details: '',
+      status: 'pending', // Reset status to default
+    });
   };
 
   const handleCloseModal = () => {
@@ -30,108 +43,107 @@ const CustomServiceForm = () => {
 
   return (
     <>
-    <Header/>
-    <h2 className="text-center mb-4 page-title light-background">Request Custom Service</h2>
-    <div className="container">
-      <div className="service-request-container">
-        {/* <h2 className="text-center mb-4">Request Custom Service</h2> */}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label htmlFor="serviceName" className="form-label">
-              Full Name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="serviceName"
-              value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="serviceEmail" className="form-label">
-              Email Address
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="serviceEmail"
-              value={serviceEmail}
-              onChange={(e) => setServiceEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="serviceType" className="form-label">
-              Service Type
-            </label>
-            <select
-              className="form-select"
-              id="serviceType"
-              value={serviceType}
-              onChange={(e) => setServiceType(e.target.value)}
-              required
-            >
-              <option value="">Select Service</option>
-              <option value="web-development">Web Development</option>
-              <option value="mobile-app">Mobile App Development</option>
-              <option value="data-analysis">Data Analysis</option>
-              <option value="cloud-services">Cloud Services</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="serviceDetails" className="form-label">
-              Service Details
-            </label>
-            <textarea
-              className="form-control"
-              id="serviceDetails"
-              rows="4"
-              value={serviceDetails}
-              onChange={(e) => setServiceDetails(e.target.value)}
-              required
-              placeholder="Describe your custom service requirements"
-            ></textarea>
-          </div>
-          <div className="mb-3">
-            <label htmlFor="servicebudget" className="form-label">
-              Estimated Budget
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              id="servicebudget"
-              value={serviceBudget}
-              onChange={(e) => setServiceBudget(e.target.value)}
-              placeholder="Optional"
-            />
-          </div>
-          <div className="mb-3 form-check">
-            <input type="checkbox" className="form-check-input" id="termsCheck" required />
-            <label className="form-check-label" htmlFor="termsCheck">
-              I agree to the terms and conditions
-            </label>
-          </div>
-          <button type="submit" className="btn btn-primary w-100">
-            Submit Service Request
-          </button>
-        </form>
-        <Modal show={showModal} onHide={handleCloseModal} centered>
-          <Modal.Header closeButton>
-            <Modal.Title>Success!</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Your service request has been submitted successfully!</Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary" onClick={handleCloseModal}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+      <Header />
+      <h2 className="text-center mb-4 page-title light-background">Request Custom Service</h2>
+      <div className="container">
+        <div className="service-request-container">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label htmlFor="name" className="form-label">
+                Full Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label">
+                Email Address
+              </label>
+              <input
+                type="email"
+                className="form-control"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="phone" className="form-label">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="service_type" className="form-label">
+                Service Type
+              </label>
+              <select
+                className="form-select"
+                id="service_type"
+                name="service_type"
+                value={formData.service_type}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Service</option>
+                <option value="Website Development">Website Development</option>
+                <option value="Custom Training">Custom Training</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="details" className="form-label">
+                Service Details
+              </label>
+              <textarea
+                className="form-control"
+                id="details"
+                name="details"
+                rows="4"
+                value={formData.details}
+                onChange={handleChange}
+                required
+                placeholder="Describe your custom service requirements"
+              ></textarea>
+            </div>
+           
+            <button type="submit" className="btn btn-primary w-100">
+              Submit Service Request
+            </button>
+          </form>
+          <Modal show={showModal} onHide={handleCloseModal} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Success!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Your service request has been submitted successfully!
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="primary" onClick={handleCloseModal}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
-    </div>
-    <Footer/>
+      <Footer />
     </>
   );
 };

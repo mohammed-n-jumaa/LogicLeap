@@ -10,7 +10,7 @@ class FAQ extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'faq'; // تأكد من استخدام اسم الجدول الصحيح
+    protected $table = 'faq'; 
 
     protected $fillable = [
         'question',

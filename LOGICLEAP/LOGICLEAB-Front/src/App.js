@@ -22,6 +22,8 @@ import FAQManagement from './pages/FAQManagement';
 import Login from './pages/Login'; 
 import ProtectedRoute from './ProtectedRoute'; 
 import Gallery from './pages/Gallery';
+import StatisticsManagement from './pages/StatisticsManagement';
+
 const App = () => {
     const location = useLocation(); 
     
@@ -128,6 +130,10 @@ const App = () => {
                                       <Route 
                         path="/gallery"
                         element={<ProtectedRoute element={<Gallery />} requiredRole={['admin', 'super_admin']}/>}
+                    />
+                                      <Route 
+                        path="/StatisticsManagement"
+                        element={<ProtectedRoute element={<StatisticsManagement />} requiredRole={['admin', 'super_admin']}/>}
                     />
                 </Routes>
             </div>
