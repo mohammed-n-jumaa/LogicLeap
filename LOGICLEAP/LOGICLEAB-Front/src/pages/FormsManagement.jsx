@@ -11,6 +11,7 @@ const FormManagement = () => {
     const [programs, setPrograms] = useState([]);
     const [newForm, setNewForm] = useState({
         title: '',
+        description: '', // Added description field
         program_id: '',
         fields: [],
         status: 'active'
@@ -33,7 +34,6 @@ const FormManagement = () => {
                     axios.get('http://localhost:8000/api/forms'),
                     axios.get('http://localhost:8000/api/programs')
                 ]);
-                // Forms should already include program data from the backend
                 setForms(formsResponse.data);
                 setPrograms(programsResponse.data);
                 setError(null);
@@ -52,7 +52,8 @@ const FormManagement = () => {
             name: '',
             label: '',
             type: 'text',
-            required: false
+            required: false,
+            question: ''
         };
         setNewForm({
             ...newForm,
@@ -80,13 +81,12 @@ const FormManagement = () => {
     const handleAddForm = async () => {
         try {
             const response = await axios.post('http://localhost:8000/api/forms', newForm);
-            // Add the program data to the new form before adding it to the state
             const newFormWithProgram = {
                 ...response.data,
-                program: programs.find(p => p.id === response.data.program_id) 
+                program: programs.find(p => p.id === response.data.program_id)
             };
             setForms([...forms, newFormWithProgram]);
-            setNewForm({ title: '', program_id: '', fields: [], status: 'active' });
+            setNewForm({ title: '', description: '', program_id: '', fields: [], status: 'active' });
             setIsAddModalOpen(false);
             Swal.fire('Success!', 'Form added successfully.', 'success');
         } catch (error) {
@@ -98,7 +98,6 @@ const FormManagement = () => {
     const handleEditForm = async () => {
         try {
             const response = await axios.put(`http://localhost:8000/api/forms/${editForm.id}`, editForm);
-            // Update the forms array with the updated form that includes program data
             setForms(forms.map(form => (form.id === editForm.id ? response.data : form)));
             setEditForm(null);
             setIsEditModalOpen(false);
@@ -195,6 +194,7 @@ const FormManagement = () => {
                                         <tr>
                                             <th>ID</th>
                                             <th>Title</th>
+                                            <th>Description</th> {/* Added description column */}
                                             <th>Program</th>
                                             <th>Fields Count</th>
                                             <th>Status</th>
@@ -206,24 +206,30 @@ const FormManagement = () => {
                                             <tr key={form.id}>
                                                 <td>{form.id}</td>
                                                 <td>{form.title}</td>
-                                                <td>{form.program?.title}</td> 
+                                                <td>{form.description}</td> {/* Added description field */}
+                                                <td>{form.program?.title}</td>
                                                 <td>{form.fields.length}</td>
                                                 <td>
                                                     <span className={`badge ${form.status === 'active' ? 'bg-success' : 'bg-danger'}`}>
                                                         {form.status}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    <button className="btn btn-sm btn-info me-2" onClick={() => {
-                                                        setEditForm(form);
-                                                        setIsEditModalOpen(true);
-                                                    }}>
-                                                        Edit
-                                                    </button>
-                                                    <button className="btn btn-sm btn-danger" onClick={() => handleDeleteForm(form.id)}>
-                                                        Delete
-                                                    </button>
+                                                <td className="text-center fw-medium">
+                                                    <i
+                                                        className="fas fa-edit"
+                                                        onClick={() => {
+                                                            setEditForm(form);
+                                                            setIsEditModalOpen(true);
+                                                        }}
+                                                        style={{ cursor: 'pointer', color: '#5a5a5a', marginRight: '10px' }}>
+                                                    </i>
+                                                    <i
+                                                        className="fas fa-trash"
+                                                        onClick={() => handleDeleteForm(form.id)}
+                                                        style={{ cursor: 'pointer', color: '#5a5a5a' }}>
+                                                    </i>
                                                 </td>
+
                                             </tr>
                                         ))}
                                     </tbody>
@@ -282,6 +288,14 @@ const FormManagement = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
+                                            <label className="form-label">Description</label>
+                                            <textarea
+                                                className="form-control"
+                                                value={newForm.description}
+                                                onChange={(e) => setNewForm({ ...newForm, description: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
                                             <label className="form-label">Program</label>
                                             <select
                                                 className="form-select"
@@ -318,6 +332,18 @@ const FormManagement = () => {
                                                 <div key={index} className="card mt-2">
                                                     <div className="card-body">
                                                         <div className="row">
+                                                            <div className="col-md-12">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label">Question</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        placeholder="Enter question"
+                                                                        value={field.question || ''}
+                                                                        onChange={(e) => handleFieldChange(index, { ...field, question: e.target.value })}
+                                                                    />
+                                                                </div>
+                                                            </div>
                                                             <div className="col-md-3">
                                                                 <input
                                                                     type="text"
@@ -411,6 +437,14 @@ const FormManagement = () => {
                                             />
                                         </div>
                                         <div className="mb-3">
+                                            <label className="form-label">Description</label>
+                                            <textarea
+                                                className="form-control"
+                                                value={editForm.description}
+                                                onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="mb-3">
                                             <label className="form-label">Program</label>
                                             <select
                                                 className="form-select"
@@ -454,6 +488,22 @@ const FormManagement = () => {
                                                 <div key={index} className="card mt-2">
                                                     <div className="card-body">
                                                         <div className="row">
+                                                            <div className="col-md-12">
+                                                                <div className="mb-3">
+                                                                    <label className="form-label">Question</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        className="form-control"
+                                                                        placeholder="Enter question"
+                                                                        value={field.question || ''}
+                                                                        onChange={(e) => {
+                                                                            const updatedFields = [...editForm.fields];
+                                                                            updatedFields[index] = { ...field, question: e.target.value };
+                                                                            setEditForm({ ...editForm, fields: updatedFields });
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </div>
                                                             <div className="col-md-3">
                                                                 <input
                                                                     type="text"

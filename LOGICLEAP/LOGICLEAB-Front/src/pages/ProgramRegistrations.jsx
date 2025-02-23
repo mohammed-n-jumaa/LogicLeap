@@ -16,6 +16,7 @@ const ProgramRegistrations = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [programFilter, setProgramFilter] = useState(''); 
 
   useEffect(() => {
     fetchRegistrations();
@@ -31,14 +32,15 @@ const ProgramRegistrations = () => {
       console.error('Error fetching registrations:', error);
       setError('Failed to fetch registrations.');
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setLoading(false); 
     }
   };
 
-  // Filter registrations based on search
+  // Filter registrations based on search and program filter
   const filteredRegistrations = registrations.filter(registration =>
-    registration.user?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    registration.program?.title.toLowerCase().includes(searchQuery.toLowerCase())
+    (registration.user?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    registration.program?.title.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    (programFilter ? registration.program?.title === programFilter : true)
   );
 
   // Pagination logic
@@ -98,6 +100,20 @@ const ProgramRegistrations = () => {
                         />
                       </div>
                     </div>
+                    <select
+                      className="form-select border-primary"
+                      style={{ width: '150px' }}
+                      value={programFilter}
+                      onChange={(e) => setProgramFilter(e.target.value)}
+                    >
+                      <option value="">All Programs</option>
+                      {registrations
+                        .map(registration => registration.program?.title)
+                        .filter((title, index, self) => title && self.indexOf(title) === index)
+                        .map((title, index) => (
+                          <option key={index} value={title}>{title}</option>
+                        ))}
+                    </select>
                     <select
                       className="form-select border-primary"
                       style={{ width: '100px' }}

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +12,7 @@ class Form extends Model
 
     protected $fillable = [
         'title',
+        'description', 
         'program_id',
         'fields',
         'status'

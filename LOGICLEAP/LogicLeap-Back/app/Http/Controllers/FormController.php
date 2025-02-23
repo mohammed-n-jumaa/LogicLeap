@@ -18,21 +18,22 @@ class FormController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string', // أضف هذا الحقل
             'program_id' => 'required|exists:programs,id',
             'fields' => 'required|array',
             'fields.*.name' => 'required|string',
             'fields.*.label' => 'required|string',
             'fields.*.type' => 'required|string|in:text,number,email,textarea,select,checkbox',
             'fields.*.required' => 'required|boolean',
+            'fields.*.question' => 'nullable|string', 
             'status' => 'required|in:active,inactive'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+    
         $form = Form::create($request->all());
-        // Load the program relationship before returning
         return response()->json($form->load('program'), 201);
     }
 
@@ -45,24 +46,25 @@ class FormController extends Controller
     public function update(Request $request, $id)
     {
         $form = Form::findOrFail($id);
-        
+    
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string', 
             'program_id' => 'required|exists:programs,id',
             'fields' => 'required|array',
             'fields.*.name' => 'required|string',
             'fields.*.label' => 'required|string',
             'fields.*.type' => 'required|string|in:text,number,email,textarea,select,checkbox',
             'fields.*.required' => 'required|boolean',
+            'fields.*.question' => 'nullable|string', 
             'status' => 'required|in:active,inactive'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
+    
         $form->update($request->all());
-        // Load the program relationship before returning
         return response()->json($form->load('program'));
     }
 
