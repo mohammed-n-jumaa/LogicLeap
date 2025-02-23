@@ -40,20 +40,22 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/validate-register', [AuthController::class, 'validateRegister']);
 // Public Routes (No Protection)
 
-
+// Gallery Routes
 Route::get('/galleries', [GalleryController::class, 'index']);
 Route::post('/galleries', [GalleryController::class, 'store']);
 Route::put('/galleries/{id}', [GalleryController::class, 'update']);
 Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
 
+// Program Routes
 Route::prefix('programs')->group(function () {
     Route::get('/', [ProgramController::class, 'index']);
     Route::post('/', [ProgramController::class, 'store']);
     Route::get('/{program}', [ProgramController::class, 'show']);
     Route::post('/{program}', [ProgramController::class, 'update']);
     Route::delete('/{id}', [ProgramController::class, 'softDelete']);
-    
 });
+
+// User Routes
 Route::prefix('users')->group(function () {
     Route::put('/{id}', [UserController::class, 'update'])->middleware('auth:sanctum');
 });
@@ -65,6 +67,7 @@ Route::prefix('users')->group(function () {
     
 });
 
+// Category Routes
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::post('/', [CategoryController::class, 'store']);
@@ -72,6 +75,7 @@ Route::prefix('categories')->group(function () {
     Route::delete('/{id}', [CategoryController::class, 'destroy']);
 });
 
+// Program Registration Routes
 Route::prefix('registrations')->group(function () {
     Route::get('/', [RegistrationController::class, 'index']);
     Route::post('/', [RegistrationController::class, 'store']);
@@ -80,6 +84,7 @@ Route::prefix('registrations')->group(function () {
     
 });
 
+// Service Request Routes
 Route::prefix('service-requests')->group(function () {
     Route::get('/', [ServiceRequestController::class, 'index']);
     Route::post('/', [ServiceRequestController::class, 'store']);
@@ -87,6 +92,7 @@ Route::prefix('service-requests')->group(function () {
     Route::delete('/{id}', [ServiceRequestController::class, 'destroy']);
 });
 
+// Slider Routes
 Route::prefix('sliders')->group(function () {
     Route::get('/', [SliderController::class, 'index']);
     Route::post('/', [SliderController::class, 'store']);
@@ -95,6 +101,7 @@ Route::prefix('sliders')->group(function () {
     Route::delete('/{id}/soft-delete', [SliderController::class, 'softDelete']);
 });
 
+// Partner Routes
 Route::prefix('partners')->group(function () {
     Route::get('/', [PartnerController::class, 'index']);
     Route::post('/', [PartnerController::class, 'store']);
@@ -102,11 +109,13 @@ Route::prefix('partners')->group(function () {
     Route::delete('/{id}', [PartnerController::class, 'softDelete']);
 });
 
+// Contact Routes
 Route::get('/contacts', [ContactController::class, 'index']);
 Route::post('/contacts', [ContactController::class, 'store']);
 Route::put('/contacts/{id}', [ContactController::class, 'update']);
 Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
 
+// Form Routes
 Route::prefix('forms')->group(function () {
     Route::get('/', [FormController::class, 'index']);
     Route::post('/', [FormController::class, 'store']);
@@ -114,6 +123,7 @@ Route::prefix('forms')->group(function () {
     Route::delete('/{id}', [FormController::class, 'softDelete']);
 });
 
+// Site Service Routes
 Route::prefix('site-services')->group(function () {
     Route::get('/', [SiteServiceController::class, 'index']);
     Route::post('/', [SiteServiceController::class, 'store']);
@@ -121,6 +131,7 @@ Route::prefix('site-services')->group(function () {
     Route::delete('/{id}', [SiteServiceController::class, 'softDelete']);
 });
 
+// Success Story Routes
 Route::prefix('success-stories')->group(function () {
     Route::get('/', [SuccessStoryController::class, 'index']);
     Route::post('/', [SuccessStoryController::class, 'store']);
@@ -128,6 +139,7 @@ Route::prefix('success-stories')->group(function () {
     Route::delete('/{id}', [SuccessStoryController::class, 'softDelete']);
 });
 
+// FAQ Routes
 Route::prefix('faqs')->group(function () {
     Route::get('/', [FAQController::class, 'index']);
     Route::post('/', [FAQController::class, 'store']);

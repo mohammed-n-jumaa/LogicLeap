@@ -4,6 +4,81 @@ import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
+const DynamicList = ({ label, name, placeholder }) => {
+  const [items, setItems] = useState(['']);
+
+  const handleItemChange = (index, value) => {
+    const newItems = [...items];
+    newItems[index] = value;
+    setItems(newItems);
+  };
+
+  const handleAddItem = () => {
+    setItems([...items, '']);
+  };
+
+  const handleRemoveItem = (index) => {
+    if (items.length > 1) {
+      const newItems = items.filter((_, i) => i !== index);
+      setItems(newItems);
+    }
+  };
+
+  return (
+    <div className="mb-3">
+      <label className="form-label">{label}</label>
+      {items.map((item, index) => (
+        <div key={index} className="d-flex gap-2 mb-2">
+          <input
+            type="text"
+            className="form-control border-0 shadow-sm"
+            value={item}
+            onChange={(e) => handleItemChange(index, e.target.value)}
+            placeholder={placeholder}
+          />
+          <button
+            type="button"
+            onClick={() => handleRemoveItem(index)}
+            className="btn"
+            style={{
+              background: 'linear-gradient(to right, #ff4c4c, #ff6666)',
+              color: '#fff',
+              width: '40px',
+              height: '40px',
+              padding: '0',
+              borderRadius: '8px'
+            }}
+          >
+            -
+          </button>
+          {index === items.length - 1 && (
+            <button
+              type="button"
+              onClick={handleAddItem}
+              className="btn"
+              style={{
+                background: 'linear-gradient(to right, #28a745, #34ce57)',
+                color: '#fff',
+                width: '40px',
+                height: '40px',
+                padding: '0',
+                borderRadius: '8px'
+              }}
+            >
+              +
+            </button>
+          )}
+        </div>
+      ))}
+      <input 
+        type="hidden" 
+        name={name} 
+        value={items.filter(item => item.trim() !== '').join('\n')} 
+      />
+    </div>
+  );
+};
+
 const AddProgram = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -62,6 +137,10 @@ const AddProgram = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate('/programs');
+  };
+
   return (
     <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
       <Sidebar />
@@ -87,6 +166,7 @@ const AddProgram = () => {
                   <p className="text-muted text-center">Fill out the form below to add a new program</p>
 
                   <form onSubmit={handleSubmit}>
+                    {/* ... (all the existing form fields remain exactly the same) ... */}
                     <div className="row g-4">
                       <div className="col-md-6">
                         <div className="mb-3">
@@ -276,46 +356,29 @@ const AddProgram = () => {
                       </div>
 
                       <div className="col-md-12">
-                        <div className="mb-3">
-                          <label htmlFor="modules" className="form-label">Modules</label>
-                          <textarea
-                            className="form-control border-0 shadow-sm"
-                            id="modules"
-                            name="modules"
-                            rows="3"
-                            placeholder="Enter program modules (optional)"
-                          ></textarea>
-                        </div>
+                        <DynamicList
+                          label="Modules"
+                          name="modules"
+                          placeholder="Enter a module"
+                        />
                       </div>
 
                       <div className="col-md-12">
-                        <div className="mb-3">
-                          <label htmlFor="what_youll_learn" className="form-label">What You'll Learn</label>
-                          <textarea
-                            className="form-control border-0 shadow-sm"
-                            id="what_youll_learn"
-                            name="what_youll_learn"
-                            rows="3"
-                            placeholder="Enter what you'll learn (optional)"
-                          ></textarea>
-                        </div>
+                        <DynamicList
+                          label="What You'll Learn"
+                          name="what_youll_learn"
+                          placeholder="Enter a learning outcome"
+                        />
                       </div>
 
-                      {/* Program Terms Field */}
                       <div className="col-md-12">
-                        <div className="mb-3">
-                          <label htmlFor="program_terms" className="form-label">Program Terms</label>
-                          <textarea
-                            className="form-control border-0 shadow-sm"
-                            id="program_terms"
-                            name="program_terms"
-                            rows="3"
-                            placeholder="Enter program terms (optional)"
-                          ></textarea>
-                        </div>
+                        <DynamicList
+                          label="Program Terms"
+                          name="program_terms"
+                          placeholder="Enter a program term"
+                        />
                       </div>
 
-                      {/* WhatsApp Link Field */}
                       <div className="col-md-12">
                         <div className="mb-3">
                           <label htmlFor="whatsapp_link" className="form-label">WhatsApp Link</label>
@@ -331,18 +394,37 @@ const AddProgram = () => {
                     </div>
 
                     <div className="text-center mt-4">
-                      <button type="submit" className="btn btn-lg px-5 py-3 rounded-pill shadow-sm" 
-                          style={{ 
-                              background: 'linear-gradient(to right, #ff4c4c, #ff6666)',
-                              color: '#fff',
-                              border: 'none',
-                              transition: 'all 0.3s ease'
-                          }}
-                          onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
-                          onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                      <button 
+                        type="button" 
+                        className="btn btn-lg px-5 py-3 rounded-pill shadow-sm me-3" 
+                        style={{ 
+                          background: '#6c757d',
+                          color: '#fff',
+                          border: 'none',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onClick={handleCancel}
+                        onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                        onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
+                      >
+                        <i className="fas fa-times-circle me-2"></i>
+                        Cancel
+                      </button>
+                      <button 
+                        type="submit" 
+                        className="btn btn-lg px-5 py-3 rounded-pill shadow-sm" 
+                        style={{ 
+                          background: 'linear-gradient(to right, #ff4c4c, #ff6666)',
+                          color: '#fff',
+                          border: 'none',
+                          transition: 'all 0.3s ease'
+                        }}
+                        disabled={isSubmitting}
+                        onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
+                        onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
                       >
                         <i className="fas fa-plus-circle me-2"></i>
-                        Submit
+                        {isSubmitting ? 'Submitting...' : 'Submit'}
                       </button>
                     </div>
                   </form>

@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Form extends Model
 {
@@ -11,21 +11,17 @@ class Form extends Model
 
     protected $fillable = [
         'title',
-        'category_id',
-        'description',
-        'questions',
-        'responses',
-        'status',
+        'program_id',
+        'fields',
+        'status'
     ];
 
+    protected $casts = [
+        'fields' => 'array'
+    ];
 
-    public function category()
+    public function program()
     {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function registrations()
-    {
-        return $this->hasMany(Registration::class);
+        return $this->belongsTo(Program::class);
     }
 }

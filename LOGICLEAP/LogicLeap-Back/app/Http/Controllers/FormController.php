@@ -2,63 +2,94 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class FormController extends Controller
+class FormController extends Controller 
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $forms = Form::with('program')->get();
+        return response()->json($forms);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'program_id' => 'required|exists:programs,id',
+            'fields' => 'required|array',
+            'fields.*.name' => 'required|string',
+            'fields.*.label' => 'required|string',
+            'fields.*.type' => 'required|string|in:text,number,email,textarea,select,checkbox',
+            'fields.*.required' => 'required|boolean',
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $form = Form::create($request->all());
+        // Load the program relationship before returning
+        return response()->json($form->load('program'), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $form = Form::with('program')->findOrFail($id);
+        return response()->json($form);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $form = Form::findOrFail($id);
+        
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|max:255',
+            'program_id' => 'required|exists:programs,id',
+            'fields' => 'required|array',
+            'fields.*.name' => 'required|string',
+            'fields.*.label' => 'required|string',
+            'fields.*.type' => 'required|string|in:text,number,email,textarea,select,checkbox',
+            'fields.*.required' => 'required|boolean',
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $form->update($request->all());
+        // Load the program relationship before returning
+        return response()->json($form->load('program'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function softDelete($id)
     {
-        //
+        $form = Form::findOrFail($id);
+        $form->delete();
+        return response()->json(null, 204);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function restore($id)
     {
-        //
+        $form = Form::withTrashed()->findOrFail($id);
+        $form->restore();
+        return response()->json($form->load('program'));
+    }
+
+    public function forceDelete($id)
+    {
+        $form = Form::withTrashed()->findOrFail($id);
+        $form->forceDelete();
+        return response()->json(null, 204);
+    }
+
+    public function getTrashed()
+    {
+        $forms = Form::onlyTrashed()->with('program')->get();
+        return response()->json($forms);
     }
 }

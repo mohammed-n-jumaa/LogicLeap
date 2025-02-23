@@ -1,6 +1,12 @@
 import React from 'react';
 import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Layers } from 'lucide-react';
 
+// Helper function to convert string to bullet points
+const convertToBulletPoints = (text) => {
+  if (!text) return [];
+  return text.split('\n').filter(item => item.trim() !== '');
+};
+
 const ProgramDetailsModal = ({ program, onClose, categories }) => {
   if (!program) return null;
 
@@ -10,13 +16,17 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
     return status === 'active' ? 'bg-success' : 'bg-danger';
   };
 
-  // Function to get category name from category ID
   const getCategoryName = () => {
     if (program.category && typeof program.category === 'object') {
       return program.category.name || 'Unknown Category';
     }
     return 'Category not specified';
   };
+
+  // Convert strings to arrays
+  const programTerms = convertToBulletPoints(program.program_terms);
+  const modules = convertToBulletPoints(program.modules);
+  const learningPoints = convertToBulletPoints(program.what_youll_learn);
 
   return (
     <div className="modal fade show" style={{ display: 'block' }}>
@@ -28,6 +38,7 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
           </div>
 
           <div className="modal-body">
+            {/* Previous code remains the same until Program Terms Card */}
             <div className="position-relative mb-4 d-flex justify-content-center align-items-center">
               <img
                 src={program.image}
@@ -104,12 +115,7 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
                         <div>
                           <small className="text-muted d-block">Zoom Link</small>
                           {program.zoom_link ? (
-                            <a
-                              href={program.zoom_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-purple text-decoration-none"
-                            >
+                            <a href={program.zoom_link} target="_blank" rel="noopener noreferrer" className="text-purple text-decoration-none">
                               Join the Meeting
                             </a>
                           ) : (
@@ -117,26 +123,21 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
                           )}
                         </div>
                       </div>
-                      <div className="d-flex align-items-center gap-2" style={{ color: '#c2cad6' }}>
+                      <div className="d-flex align-items-center gap-2">
                         <Tag className="text-purple" size={20} />
                         <div>
                           <small className="text-muted d-block">Attendance Mode</small>
-                          <span className="badge bg-light mt-1 fw-bold" style={{ color: '#c2cad6', backgroundColor: '#f8f9fa' }}>
+                          <span className="badge bg-light mt-1 fw-bold text-purple">
                             {program.mode}
                           </span>
                         </div>
                       </div>
-                      <div className="d-flex align-items-center gap-2" style={{ color: '#c2cad6' }}>
+                      <div className="d-flex align-items-center gap-2">
                         <Tag className="text-purple" size={20} />
                         <div>
                           <small className="text-muted d-block">WhatsApp Link</small>
                           {program.whatsapp_link ? (
-                            <a
-                              href={program.whatsapp_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-purple text-decoration-none"
-                            >
+                            <a href={program.whatsapp_link} target="_blank" rel="noopener noreferrer" className="text-purple text-decoration-none">
                               Contact on WhatsApp
                             </a>
                           ) : (
@@ -150,28 +151,61 @@ const ProgramDetailsModal = ({ program, onClose, categories }) => {
               </div>
             </div>
 
-            {/* Program Terms Card */}
+            {/* Program Terms Card - Updated */}
             <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)' }}>
               <div className="card-body">
                 <h3 className="fs-5 fw-bold mb-4 text-info">Program Terms</h3>
                 <div className="mt-2">
-                  <p className="text-gray-700 lh-base">{program.program_terms || 'Not specified'}</p>
+                  {programTerms.length > 0 ? (
+                    <ul className="list-unstyled mb-0">
+                      {programTerms.map((term, index) => (
+                        <li key={index} className="mb-2 d-flex align-items-start">
+                          <span className="me-2 text-info">•</span>
+                          <span>{term}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted mb-0">No program terms specified</p>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Modules and What You'll Learn Card */}
+            {/* Modules and What You'll Learn Card - Updated */}
             <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f9f9ff 0%, #ffffff 100%)' }}>
               <div className="card-body">
                 <h3 className="fs-5 fw-bold mb-4 text-info">Program Modules & Learnings</h3>
-                <div className="d-flex flex-column gap-3">
-                  <div className="mt-2">
-                    <small className="text-muted d-block mb-2">Modules</small>
-                    <p className="text-gray-700 lh-base">{program.modules || 'Not specified'}</p>
+                <div className="d-flex flex-column gap-4">
+                  <div>
+                    <small className="text-muted d-block mb-3">Modules</small>
+                    {modules.length > 0 ? (
+                      <ul className="list-unstyled mb-0">
+                        {modules.map((module, index) => (
+                          <li key={index} className="mb-2 d-flex align-items-start">
+                            <span className="me-2 text-info">•</span>
+                            <span>{module}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-muted mb-0">No modules specified</p>
+                    )}
                   </div>
-                  <div className="mt-2">
-                    <small className="text-muted d-block mb-2">What You'll Learn</small>
-                    <p className="text-gray-700 lh-base">{program.what_youll_learn || 'Not specified'}</p>
+                  <div>
+                    <small className="text-muted d-block mb-3">What You'll Learn</small>
+                    {learningPoints.length > 0 ? (
+                      <ul className="list-unstyled mb-0">
+                        {learningPoints.map((point, index) => (
+                          <li key={index} className="mb-2 d-flex align-items-start">
+                            <span className="me-2 text-info">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-muted mb-0">No learning points specified</p>
+                    )}
                   </div>
                 </div>
               </div>

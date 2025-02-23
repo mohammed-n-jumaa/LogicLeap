@@ -2,6 +2,89 @@ import React, { useEffect } from 'react';
 import { Calendar, Clock, MapPin, Video, DollarSign, Tag, Layers, Image } from 'lucide-react';
 import Swal from 'sweetalert2';
 
+// DynamicList component from AddProgram
+const DynamicList = ({ label, name, value, onChange }) => {
+  const [items, setItems] = React.useState(['']);
+
+  useEffect(() => {
+    if (value) {
+      // Split the string by newlines and filter out empty strings
+      const initialItems = value.split('\n').filter(item => item.trim() !== '');
+      setItems(initialItems.length > 0 ? initialItems : ['']);
+    }
+  }, [value]);
+
+  const handleItemChange = (index, newValue) => {
+    const newItems = [...items];
+    newItems[index] = newValue;
+    setItems(newItems);
+    // Call the parent's onChange with the updated string
+    onChange(name, newItems.filter(item => item.trim() !== '').join('\n'));
+  };
+
+  const handleAddItem = () => {
+    setItems([...items, '']);
+  };
+
+  const handleRemoveItem = (index) => {
+    if (items.length > 1) {
+      const newItems = items.filter((_, i) => i !== index);
+      setItems(newItems);
+      // Call the parent's onChange with the updated string
+      onChange(name, newItems.filter(item => item.trim() !== '').join('\n'));
+    }
+  };
+
+  return (
+    <div className="mb-3">
+      <small className="text-muted d-block mb-2">{label}</small>
+      {items.map((item, index) => (
+        <div key={index} className="d-flex gap-2 mb-2">
+          <input
+            type="text"
+            className="form-control"
+            value={item}
+            onChange={(e) => handleItemChange(index, e.target.value)}
+            placeholder={`Enter ${label.toLowerCase()}...`}
+          />
+          <button
+            type="button"
+            onClick={() => handleRemoveItem(index)}
+            className="btn"
+            style={{
+              background: 'linear-gradient(to right, #ff4c4c, #ff6666)',
+              color: '#fff',
+              width: '40px',
+              height: '38px',
+              padding: '0',
+              borderRadius: '8px'
+            }}
+          >
+            -
+          </button>
+          {index === items.length - 1 && (
+            <button
+              type="button"
+              onClick={handleAddItem}
+              className="btn"
+              style={{
+                background: 'linear-gradient(to right, #28a745, #34ce57)',
+                color: '#fff',
+                width: '40px',
+                height: '38px',
+                padding: '0',
+                borderRadius: '8px'
+              }}
+            >
+              +
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const EditProgramModal = ({ program, onClose, onSave }) => {
   const [formData, setFormData] = React.useState({});
   const [imageFile, setImageFile] = React.useState(null);
@@ -9,7 +92,6 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
 
   useEffect(() => {
     if (program) {
-      console.log('Program Data:', program);
       setFormData(prevData => ({
         ...prevData,
         id: program.id,
@@ -47,8 +129,6 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
       dataToSend.append('image', imageFile);
     }
 
-    console.log([...dataToSend.entries()]); // For debugging
-
     try {
       await onSave(dataToSend);
       Swal.fire({
@@ -69,6 +149,13 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleDynamicListChange = (name, value) => {
     setFormData(prev => ({
       ...prev,
       [name]: value
@@ -275,28 +362,18 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
                 <div className="card-body">
                   <h3 className="fs-5 fw-bold mb-4 text-info">Program Modules & Learnings</h3>
                   <div className="d-flex flex-column gap-3">
-                    <div className="mt-2">
-                      <small className="text-muted d-block mb-2">Modules</small>
-                      <textarea
-                        name="modules"
-                        className="form-control"
-                        value={formData.modules || ''}
-                        onChange={handleChange}
-                        rows="4"
-                        placeholder="Enter program modules..."
-                      ></textarea>
-                    </div>
-                    <div className="mt-2">
-                      <small className="text-muted d-block mb-2">What You'll Learn</small>
-                      <textarea
-                        name="what_youll_learn"
-                        className="form-control"
-                        value={formData.what_youll_learn || ''}
-                        onChange={handleChange}
-                        rows="4"
-                        placeholder="Enter learning objectives..."
-                      ></textarea>
-                    </div>
+                    <DynamicList
+                      label="Modules"
+                      name="modules"
+                      value={formData.modules}
+                      onChange={handleDynamicListChange}
+                    />
+                    <DynamicList
+                      label="What You'll Learn"
+                      name="what_youll_learn"
+                      value={formData.what_youll_learn}
+                      onChange={handleDynamicListChange}
+                    />
                   </div>
                 </div>
               </div>
@@ -305,21 +382,17 @@ const EditProgramModal = ({ program, onClose, onSave }) => {
               <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%)' }}>
                 <div className="card-body">
                   <h3 className="fs-5 fw-bold mb-4 text-info">Program Terms</h3>
-                  <div className="mt-2">
-                    <textarea
-                      name="program_terms"
-                      className="form-control"
-                      value={formData.program_terms || ''}
-                      onChange={handleChange}
-                      rows="4"
-                      placeholder="Enter program terms (optional)"
-                    ></textarea>
-                  </div>
+                  <DynamicList
+                    label="Program Terms"
+                    name="program_terms"
+                    value={formData.program_terms}
+                    onChange={handleDynamicListChange}
+                  />
                 </div>
               </div>
 
-              {/* Cost and Description Card */}
-              <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0fff4 0%, #ffffff 100%)' }}>
+            {/* Cost and Description Card */}
+            <div className="card border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f0fff4 0%, #ffffff 100%)' }}>
                 <div className="card-body">
                   <h3 className="fs-5 fw-bold mb-4 text-success">Cost and Description</h3>
                   <div className="d-flex flex-column gap-3">

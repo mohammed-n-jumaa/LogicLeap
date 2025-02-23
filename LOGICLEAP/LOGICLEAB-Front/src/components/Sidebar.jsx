@@ -117,7 +117,7 @@ const Sidebar = () => {
                                 <span>
                                     <Icon icon="mdi:file-outline" className="fs-6" />
                                 </span>
-                                <span className="hide-menu">Forms</span>
+                                <span className="hide-menu">Program Forms</span>
                             </Link>
                         </li>
                         <li className={`sidebar-item ${location.pathname === '/success-stories' ? 'active' : ''}`}>

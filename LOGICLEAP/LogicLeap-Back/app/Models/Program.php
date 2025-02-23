@@ -32,5 +32,9 @@ public function category()
     {
         return $this->hasMany(Gallery::class);
     }
+    public function forms()
+    {
+        return $this->hasMany(Form::class);
+    }
     
 }
