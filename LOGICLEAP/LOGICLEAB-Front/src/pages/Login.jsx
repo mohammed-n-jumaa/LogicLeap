@@ -30,24 +30,25 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+    
         if (!email || !password) {
             setError('Please fill in all required fields');
             return;
         }
-
+    
         setIsLoading(true);
         console.log('Starting login process...');
-
+    
         try {
             console.log('Sending login request...');
             const response = await axios.post('http://localhost:8000/api/login', {
                 email,
                 password,
+                isAdminPortal: true // Add this flag to indicate admin portal login
             });
-
+    
             console.log('Login response received:', response.status);
-
+    
             if (response.data.token) {
                 console.log('Login successful, storing data...');
                 localStorage.setItem('token', response.data.token);
@@ -57,7 +58,8 @@ const Login = () => {
             }
         } catch (error) {
             console.log('Login error:', error);
-            setError('Invalid credentials or unauthorized access');
+            const errorMessage = error.response?.data?.message || 'Invalid credentials or unauthorized access';
+            setError(errorMessage);
         } finally {
             console.log('Login process completed');
             setIsLoading(false);

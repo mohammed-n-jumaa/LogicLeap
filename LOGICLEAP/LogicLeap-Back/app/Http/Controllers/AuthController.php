@@ -10,32 +10,57 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function login(Request $request)
-    {
-        try {
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required'
-            ]);
-    
-            if (Auth::attempt($credentials)) {
-                $user = Auth::user();
-                $token = $user->createToken('auth-token')->plainTextToken;
-                
-                return response()->json([
-                    'user' => $user,
-                    'token' => $token
-                ], 200);
+{
+    try {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            
+            // Check if this is an admin portal login request
+            if ($request->has('isAdminPortal')) {
+                // Only allow admin and super_admin roles
+                if ($user->role === 'admin' || $user->role === 'super_admin') {
+                    $token = $user->createToken('auth-token')->plainTextToken;
+                    return response()->json([
+                        'user' => $user,
+                        'token' => $token
+                    ], 200);
+                } else {
+                    Auth::logout();
+                    return response()->json([
+                        'message' => 'Unauthorized. Admin access only.'
+                    ], 401);
+                }
+            } else {
+                // User site login - only allow regular users
+                if ($user->role === 'user') {
+                    $token = $user->createToken('auth-token')->plainTextToken;
+                    return response()->json([
+                        'user' => $user,
+                        'token' => $token
+                    ], 200);
+                } else {
+                    Auth::logout();
+                    return response()->json([
+                        'message' => 'Please use the admin portal to login.'
+                    ], 401);
+                }
             }
-    
-            return response()->json([
-                'message' => 'Invalid credentials'
-            ], 401);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred during login'
-            ], 500);
         }
+
+        return response()->json([
+            'message' => 'Invalid credentials'
+        ], 401);
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'An error occurred during login'
+        ], 500);
     }
+}
 
   public function logout(Request $request)
     {
