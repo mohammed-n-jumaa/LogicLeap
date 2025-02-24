@@ -8,7 +8,7 @@ import "../assets/css/main.css";
 
 function Courses() {
   const [programs, setPrograms] = useState([]);
-  const [categories, setCategories] = useState([]); // إضافة حالة لتخزين الفئات
+  const [categories, setCategories] = useState([]); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -19,10 +19,10 @@ function Courses() {
       try {
         const [programsResponse, categoriesResponse] = await Promise.all([
           axios.get('http://localhost:8000/api/programs'),
-          axios.get('http://localhost:8000/api/categories'), // افترض أن هناك API لجلب الفئات
+          axios.get('http://localhost:8000/api/categories'), 
         ]);
 
-        // تعديل البرامج لإضافة رابط الصورة بشكل صحيح
+       
         const programsWithImagePath = programsResponse.data.map((program) => ({
           ...program,
           image: program.image ? `http://localhost:8000/storage/${program.image}` : null,
@@ -43,7 +43,7 @@ function Courses() {
     fetchProgramsAndCategories();
   }, []);
 
-  // دالة للحصول على اسم الفئة بناءً على category_id
+  
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId);
     return category ? category.name : 'Unknown Category';
@@ -69,7 +69,7 @@ function Courses() {
                   <img src={program.image} className="card-img-top" alt="Course Image" />
                   <div className="card-body">
                     <span className="badge badge-category mb-2">
-                      {getCategoryName(program.category_id)} {/* عرض اسم الفئة */}
+                      {getCategoryName(program.category_id)}
                     </span>
                     <h5 className="card-title">{program.title}</h5>
                     <ul className="list-unstyled">

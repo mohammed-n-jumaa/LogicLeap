@@ -75,21 +75,21 @@ function App() {
           {/* Public Routes */}
           <Route path='/' element={<Navigate to="/home" replace />} />
           <Route path='/home' element={<Home />} />
-          <Route 
-            path='/login' 
+          <Route
+            path='/login'
             element={
-              isLoggedIn ? 
-                <Navigate to="/home" replace /> : 
+              isLoggedIn ?
+                <Navigate to="/home" replace /> :
                 <Login onLogin={handleLogin} />
-            } 
+            }
           />
-          <Route 
-            path='/register' 
+          <Route
+            path='/register'
             element={
-              isLoggedIn ? 
-                <Navigate to="/home" replace /> : 
+              isLoggedIn ?
+                <Navigate to="/home" replace /> :
                 <Register />
-            } 
+            }
           />
 
           {/* Add Profile Route */}
@@ -125,11 +125,14 @@ function App() {
               <CourseDetails />
             </ProtectedRoute>
           } />
-          <Route path='/courseDetails2' element={
-            <ProtectedRoute>
-              <CourseDetails2 />
-            </ProtectedRoute>
-          } />
+          <Route
+            path='/courseDetails2/:id'
+            element={
+              <ProtectedRoute>
+                <CourseDetails2 />
+              </ProtectedRoute>
+            }
+          />
           <Route path='/services' element={
             <ProtectedRoute>
               <Services />

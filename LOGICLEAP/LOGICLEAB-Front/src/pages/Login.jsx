@@ -44,7 +44,7 @@ const Login = () => {
             const response = await axios.post('http://localhost:8000/api/login', {
                 email,
                 password,
-                isAdminPortal: true // Add this flag to indicate admin portal login
+                isAdminPortal: true 
             });
     
             console.log('Login response received:', response.status);

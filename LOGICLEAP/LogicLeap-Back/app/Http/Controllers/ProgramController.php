@@ -31,8 +31,8 @@ class ProgramController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'modules' => 'nullable|string',
             'what_youll_learn' => 'nullable|string',
-            'program_terms' => 'nullable|string', // التحقق من صحة البيانات الجديدة
-            'whatsapp_link' => 'nullable|url' // التحقق من صحة البيانات الجديدة
+            'program_terms' => 'nullable|string', 
+            'whatsapp_link' => 'nullable|url' 
         ]);
 
         $data = $request->except('image');
@@ -49,9 +49,15 @@ class ProgramController extends Controller
         ], 201);
     }
 
-    public function show(Program $program)
+    public function show($id)
     {
-        return $program->load('category');
+        $program = Program::with(['galleries.images'])->find($id);
+    
+        if (!$program) {
+            return response()->json(['error' => 'Program not found'], 404);
+        }
+    
+        return response()->json($program);
     }
 
     public function update(Request $request, Program $program)
