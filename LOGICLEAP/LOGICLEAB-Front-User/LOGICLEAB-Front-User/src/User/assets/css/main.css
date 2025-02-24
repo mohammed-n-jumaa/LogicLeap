@@ -2504,4 +2504,32 @@ section,
   border-color: #EB4747;;
   box-shadow: 0 0 0 0.2rem rgba(255,0,0,0.25);
 }
+/* Gallary================================================ */
+.footer-gallery {
+  margin-top: 30px;
+}
+
+.footer-gallery h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.gallery-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.gallery-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
 

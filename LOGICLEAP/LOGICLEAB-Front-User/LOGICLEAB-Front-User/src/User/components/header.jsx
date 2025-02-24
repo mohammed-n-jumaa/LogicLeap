@@ -60,7 +60,7 @@ function Header({ onLogout }) {
             <li><Link to="/home" className={isActive('/home')}>Home</Link></li>
             <li><Link to="/about" className={isActive('/about')}>About</Link></li>
             <li><Link to="/services" className={isActive('/services')}>Services</Link></li>
-            <li><Link to="/courses2" className={isActive('/courses2')}>Courses</Link></li>
+            <li><Link to="/courses2" className={isActive('/courses2')}>Programs</Link></li>
             <li><Link to="/contact" className={isActive('/contact')}>Contact</Link></li>
           </ul>
         </nav>
@@ -104,11 +104,6 @@ function Header({ onLogout }) {
 
       <style>
         {`
-          .header {
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-          }
-
           .navmenu ul {
             display: flex;
             list-style: none;

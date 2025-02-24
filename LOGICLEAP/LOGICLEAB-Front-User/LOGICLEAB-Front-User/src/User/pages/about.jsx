@@ -15,7 +15,7 @@ function About() {
         <Route path="/about" element={<Hero showHero={false} />} /> {/* عرض Hero فقط في صفحة about */}
       </Routes>
     <Header />
-    <main className="main">
+    <main className="main mt-5">
       {/* About Section */}
       <section id="about" className="about section">
         <div className="container" data-aos="fade-up" data-aos-delay={100}>
