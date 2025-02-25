@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Modal, Spinner, Alert } from 'react-bootstrap';
+import { Button, Spinner, Alert } from 'react-bootstrap';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const CustomServiceForm = () => {
-  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({});
   const [formValues, setFormValues] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const { id } = useParams();
+  
+ 
+  const { id: urlParamId } = useParams();
+  const query = useQuery();
+  const queryParamId = query.get('program');
+  
 
-  // Fetch form data based on program ID
+  const programId = queryParamId || urlParamId;
+
   useEffect(() => {
     const fetchFormData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching form data for program ID:', id || 1);
-        const response = await axios.get(`http://localhost:8000/api/forms?program_id=${id || 1}`);
+        console.log('Fetching form data for program ID:', programId);
+        
+        if (!programId) {
+          setError('No program ID provided');
+          setLoading(false);
+          return;
+        }
+        
+        const response = await axios.get(`http://localhost:8000/api/forms?program_id=${programId}`);
         console.log('API Response:', response.data);
 
         if (response.data && response.data.length > 0) {
@@ -44,7 +63,7 @@ const CustomServiceForm = () => {
     };
 
     fetchFormData();
-  }, [id]);
+  }, [programId]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -55,36 +74,56 @@ const CustomServiceForm = () => {
   };
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  try {
-    setFormSubmitted(true);
-    console.log('Submitting form values:', formValues);
+    try {
+      setFormSubmitted(true);
+      console.log('Submitting form values:', formValues);
 
-    const response = await axios.post('http://localhost:8000/api/form-submissions', {
-      form_id: formData.id,
-      program_id: formData.program_id,
-      values: formValues
-    });
+      const response = await axios.post('http://localhost:8000/api/form-submissions', {
+        form_id: formData.id,
+        program_id: formData.program_id,
+        values: formValues
+      });
 
-    console.log('Form submission response:', response.data);
-    setShowModal(true);
+      console.log('Form submission response:', response.data);
+      
+      // Show success toast notification
+      toast.success('Your request has been sent successfully!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
 
-    const resetValues = {};
-    formData.fields.forEach(field => {
-      resetValues[field.name] = '';
-    });
-    setFormValues(resetValues);
-    setFormSubmitted(false);
-  } catch (err) {
-    console.error('Error submitting form:', err);
-    setError('Error submitting form: ' + (err.response?.data?.message || err.message));
-    setFormSubmitted(false);
-  }
-};
-
-  const handleCloseModal = () => {
-    setShowModal(false);
+      const resetValues = {};
+      formData.fields.forEach(field => {
+        resetValues[field.name] = '';
+      });
+      setFormValues(resetValues);
+      setFormSubmitted(false);
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError('Error submitting form: ' + (err.response?.data?.message || err.message));
+      
+      // Show error toast notification
+      toast.error('An error occurred while submitting the form. Please try again.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      
+      setFormSubmitted(false);
+    }
   };
 
   // Render form field based on type
@@ -195,6 +234,19 @@ const CustomServiceForm = () => {
   return (
     <>
       <Header />
+      {/* Toast Container Component */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={true} // Right-to-left for Arabic
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
 
       <div id="carouselExampleDark" className="carousel-inner" data-bs-ride="carousel">
         <div className="carousel-item active">
@@ -230,7 +282,6 @@ const CustomServiceForm = () => {
                     <h4 className="card-title mb-3 fw-bold">About This Program</h4>
                     <p className="lead mb-0">{formData.description}</p>
                   </div>
-
                 </div>
               </div>
             )}
@@ -267,7 +318,7 @@ const CustomServiceForm = () => {
                                 aria-hidden="true"
                                 className="me-2"
                               />
-                              Submitting...
+                              Sending...
                             </>
                           ) : (
                             'Submit Request'
@@ -280,23 +331,6 @@ const CustomServiceForm = () => {
               </div>
             </div>
           </div>
-
-          <Modal show={showModal} onHide={handleCloseModal} centered>
-            <Modal.Header closeButton className="border-0">
-              <Modal.Title>Success!</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="text-center py-4">
-                <i className="bi bi-check-circle-fill text-success" style={{ fontSize: "4rem" }}></i>
-                <p className="mt-4 mb-0 fs-5">Your request has been submitted successfully!</p>
-              </div>
-            </Modal.Body>
-            <Modal.Footer className="border-0">
-              <Button variant="primary" onClick={handleCloseModal} className="rounded-pill px-4">
-                Close
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </div>
       </div>
 

@@ -1,93 +1,136 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-function Clients() {
-  const [clients, setClients] = useState([]); // State to hold the clients data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+import Slider from 'react-slick';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-  // Fetch data from API
- useEffect(() => {
-    const fetchpartners = async () => {
-      setLoading(true); // تعيين حالة التحميل إلى true قبل جلب البيانات
+function Clients() {
+  const [clients, setClients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      setLoading(true);
+      
       try {
         const response = await axios.get('http://localhost:8000/api/partners');
-        const partnersWithImagePath = response.data.map((partner) => ({
-          ...partner,
-          image: partner.image
-            ? `http://localhost:8000/storage/${partner.logo}`
-            : null,
-        }));
-        setClients(partnersWithImagePath);
-        setError(null);  // إعادة تعيين الخطأ إذا تم جلب البيانات بنجاح
+        setClients(response.data);
+        setError(null);
       } catch (err) {
         console.error(err.message);
-        setError('Failed to fetch partners.');  // تعيين الخطأ في حالة حدوث استثناء
+        setError('Failed to fetch partners.');
       } finally {
-        setLoading(false);  // تعيين حالة التحميل إلى false بعد إتمام جلب البيانات
+        setLoading(false);
       }
     };
-
-    fetchpartners();
+    
+    fetchPartners();
   }, []);
 
-  // Empty dependency array means this effect runs once when the component mounts
+  // Settings for the slider
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 7,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1
+        }
+      }
+    ]
+  };
 
   if (loading) {
-    return <div>Loading...</div>; // Display loading text or spinner while fetching data
+    return <div className="text-center p-4">Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>; // Display error message if there is an issue
+    return <div className="text-center p-4 text-red-500">{error}</div>;
   }
 
   return (
-    <section id="clients" className="clients section">
-      <div className="container" style={{ display: 'flex', overflowX: 'auto' }}>
-        {clients.map((client, index) => (
-          <div key={index} className="swiper-slide" style={{ minWidth: '69px', marginRight: '10px' }}>
-            <img 
-              src={`http://localhost:8000/storage/${client.logo}`} // Assuming `image` is the field name in the API response
-              className="img-fluid" 
-              alt={`Client ${index + 1}`} 
-              style={{
-                width: '100%',
-                height: 'auto',
-                maxWidth: '100%',
-                maxHeight: '100%',
-                objectFit: 'cover',
-                opacity: 0.5,
-                transition: 'opacity 0.3s',
-                filter: 'grayscale(100%)',
-              }} 
-            />
-          </div>
-        ))}
+    <section id="clients" className="clients section py-5">
+      <div className="container mx-auto px-4">
+        <h2 className="text-center mb-4">Our Partners</h2>
+        
+        <Slider {...settings}>
+          {clients.map((client, index) => (
+            <div key={index} className="px-2">
+              <a 
+                href={client.website} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="partner-link"
+              >
+                <div className="partner-item p-3">
+                  <img
+                    src={`http://localhost:8000/storage/${client.logo}`}
+                    className="img-fluid mx-auto"
+                    alt={client.name || `Partner ${index + 1}`}
+                    style={{
+                      width: 'auto',
+                      height: '80px',
+                      maxWidth: '100%',
+                      objectFit: 'contain',
+                      transition: 'transform 0.3s',
+                    }}
+                  />
+                </div>
+              </a>
+            </div>
+          ))}
+        </Slider>
       </div>
-
+      
       <style>
         {`
-          .clients .swiper-slide img:hover {
-            filter: none;
-            opacity: 1;
+          .partner-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            transition: all 0.3s ease;
+            background: transparent;
           }
-
-          .clients .swiper-pagination {
-            margin-top: 20px;
-            position: relative;
+          
+          .partner-link {
+            text-decoration: none;
+            display: block;
           }
-
-          .clients .swiper-pagination .swiper-pagination-bullet {
-            width: 12px;
-            height: 12px;
-            opacity: 1;
-            background-color: color-mix(in srgb, var(--default-color), transparent 80%);
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+          
+          .partner-link:hover .partner-item img {
+            transform: translateY(-5px);
+            filter: brightness(1.05);
           }
-
-          .clients .swiper-pagination .swiper-pagination-bullet-active {
-            background-color: var(--accent-color);
+          
+          .slick-dots li button:before {
+            color: var(--accent-color);
+          }
+          
+          .slick-prev:before, .slick-next:before {
+            color: var(--accent-color);
           }
         `}
       </style>

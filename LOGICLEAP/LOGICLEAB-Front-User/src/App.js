@@ -28,7 +28,7 @@ import Partner from './User/components/partner';
 import Footer from './User/components/footer';
 import Hero from './User/components/hero';
 import CounterCourses from './User/components/counterCourses';
-import CounterServices from './User/components/counterServices';
+
 import Features from './User/components/Features';
 import NavServices from './User/components/navServices';
 import Hero2 from './User/components/hero2';
@@ -210,11 +210,7 @@ function App() {
               <CounterCourses />
             </ProtectedRoute>
           } />
-          <Route path='/counterServices' element={
-            <ProtectedRoute>
-              <CounterServices />
-            </ProtectedRoute>
-          } />
+       
           <Route path='/navServices' element={
             <ProtectedRoute>
               <NavServices />

@@ -147,19 +147,20 @@ const Sidebar = () => {
                         <li className={`sidebar-item ${location.pathname === '/StatisticsManagement' ? 'active' : ''}`}>
                             <Link className="sidebar-link" to="/StatisticsManagement">
                                 <span>
-                                <Icon icon="mdi:chart-bar" className="fs-6" />
+                                    <Icon icon="mdi:chart-bar" className="fs-6" />
                                 </span>
                                 <span className="hide-menu">Statistics Management</span>
                             </Link>
                         </li>
-                         <li className={`sidebar-item ${location.pathname === '/FormSubmissionsManagement' ? 'active' : ''}`}>
+                        <li className={`sidebar-item ${location.pathname === '/FormSubmissionsManagement' ? 'active' : ''}`}>
                             <Link className="sidebar-link" to="/FormSubmissionsManagement">
                                 <span>
-                                <Icon icon="mdi:chart-bar" className="fs-6" />
+                                    <Icon icon="mdi:form-textbox" className="fs-6" />
                                 </span>
                                 <span className="hide-menu">Form Submissions</span>
                             </Link>
                         </li>
+
                     </ul>
                 </nav>
             </div>

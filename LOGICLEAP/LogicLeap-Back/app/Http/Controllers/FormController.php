@@ -8,9 +8,16 @@ use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller 
 {
-    public function index()
+    public function index(Request $request)
     {
-        $forms = Form::with('program')->get();
+        $programId = $request->query('program_id');
+        
+        if ($programId) {
+            $forms = Form::where('program_id', $programId)->with('program')->get();
+        } else {
+            $forms = Form::with('program')->get();
+        }
+        
         return response()->json($forms);
     }
 

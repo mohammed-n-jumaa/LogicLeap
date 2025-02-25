@@ -12,6 +12,9 @@ const CourseDetails = () => {
   const [program, setProgram] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  // إضافة حالة للصورة المكبرة
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState('');
 
   useEffect(() => {
     // Fetch program data from Laravel backend
@@ -28,6 +31,21 @@ const CourseDetails = () => {
 
     fetchProgram();
   }, [id]);
+
+  // وظيفة فتح النافذة المنبثقة للصورة المكبرة
+  const openLightbox = (imagePath) => {
+    setCurrentImage(imagePath);
+    setLightboxOpen(true);
+    // منع التمرير في الصفحة عند فتح النافذة المنبثقة
+    document.body.style.overflow = 'hidden';
+  };
+
+  // وظيفة إغلاق النافذة المنبثقة للصورة المكبرة
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    // إعادة تفعيل التمرير في الصفحة عند إغلاق النافذة المنبثقة
+    document.body.style.overflow = 'auto';
+  };
 
   // Process text fields to convert each line to a bullet point
   const parseListItems = (text) => {
@@ -126,7 +144,7 @@ const CourseDetails = () => {
     );
   };
 
-  // Add custom CSS to ensure arrow positioning
+  // Add custom CSS to ensure arrow positioning and lightbox styling
   const sliderStyles = `
     .gallery-slider .slick-prev,
     .gallery-slider .slick-next {
@@ -166,6 +184,113 @@ const CourseDetails = () => {
       margin-top: 100px;
       border-bottom: 1px solid #e7e7e7;
     }
+    
+    .lightbox-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .lightbox-container {
+      position: relative;
+      max-width: 100%;
+      max-height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 95vh;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      width: auto;
+      height: auto;
+      min-height: 70vh;
+    }
+    
+    .lightbox-close {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+    
+    .lightbox-close:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .gallery-image {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .gallery-image:hover {
+      transform: scale(1.05);
+    }
+
+    /* تحسين الأزرار في الصورة المكبرة للتنقل بين الصور */
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s;
+      z-index: 1010;
+    }
+    
+    .lightbox-nav:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .lightbox-prev {
+      left: 20px;
+    }
+    
+    .lightbox-next {
+      right: 20px;
+    }
+
+    /* إضافة تأثير تحميل للصورة */
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    .image-loading {
+      animation: pulse 1.5s infinite;
+    }
   `;
 
   // Slider settings with custom arrows
@@ -201,6 +326,26 @@ const CourseDetails = () => {
 
       {/* Custom styles for slider arrows and empty gallery */}
       <style>{sliderStyles}</style>
+
+      {/* نافذة الصورة المكبرة */}
+      {lightboxOpen && (
+        <div className="lightbox-overlay" onClick={closeLightbox}>
+          <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
+            <button className="lightbox-close" onClick={closeLightbox}>
+              <i className="bi bi-x"></i>
+            </button>
+            <img 
+              src={currentImage} 
+              alt="Enlarged gallery image" 
+              className="lightbox-image" 
+              onError={(e) => {
+                console.error("Image failed to load:", e.target.src);
+                e.target.src = "/placeholder-image.jpg";
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Gallery Section - Check if has images */}
       {hasGalleryImages() ? (
@@ -245,12 +390,14 @@ const CourseDetails = () => {
                       <img
                         src={formatImageUrl(image.image_path)}
                         alt={`Gallery Image ${imgIndex + 1}`}
+                        className="gallery-image"
                         style={{
                           maxWidth: "100%",
                           maxHeight: "100%",
                           objectFit: "contain",
                           borderRadius: "4px",
                         }}
+                        onClick={() => openLightbox(formatImageUrl(image.image_path))}
                         onError={(e) => {
                           console.error("Image failed to load:", e.target.src);
                           e.target.src = "/placeholder-image.jpg";

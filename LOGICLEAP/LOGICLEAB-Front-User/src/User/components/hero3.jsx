@@ -2,36 +2,76 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Hero3() {
-  const [activeSlide, setActiveSlide] = useState(0);  // حالة لتخزين الشريحة النشطة
-  const [slides, setSlides] = useState([]); // حالة لتخزين البيانات القادمة من الـ API
-  const [loading, setLoading] = useState(true); // حالة التحميل
-  const [error, setError] = useState(null); // حالة الخطأ
+  const [activeSlide, setActiveSlide] = useState(0);  
+  const [slides, setSlides] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null);
+  // Add state for statistics
+  const [statistics, setStatistics] = useState([]);
 
-  // جلب البيانات من الـ API
+  // Fetch slides
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/sliders'); // تأكد من تحديث الرابط الخاص بـ API
-        setSlides(response.data); // تعيين البيانات التي تم جلبها في حالة `slides`
-        setError(null); // إعادة تعيين الخطأ إذا تم جلب البيانات بنجاح
+        const response = await axios.get('http://localhost:8000/api/sliders'); 
+        setSlides(response.data); 
+        setError(null); 
       } catch (err) {
         console.error(err.message);
-        setError('Failed to fetch slides.'); // تعيين الخطأ في حالة حدوث استثناء
+        setError('Failed to fetch slides.'); 
       } finally {
-        setLoading(false); // تعيين حالة التحميل إلى false بعد إتمام جلب البيانات
+        setLoading(false); 
       }
     };
 
     fetchSlides();
   }, []);
 
-  // التبديل بين الصور كل 15 ثانية
+  // useEffect to fetch statistics
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/statistics', {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.data) {
+          // Filter only active statistics
+          const activeStats = Array.isArray(response.data) 
+            ? response.data.filter(stat => stat.status === 'active')
+            : [];
+          setStatistics(activeStats);
+        }
+      } catch (err) {
+        console.error('Error fetching statistics:', err.message);
+      }
+    };
+
+    fetchStatistics();
+  }, []);
+
+  // Get text color class based on background color
+  const getTextColorClass = (bgColorClass) => {
+    const colorMapping = {
+      'bg-light-danger': 'text-danger',
+      'bg-light-success': 'text-success',
+      'bg-light-warning': 'text-warning',
+      'bg-light-info': 'text-info',
+      'bg-light-primary': 'text-primary'
+    };
+    
+    return colorMapping[bgColorClass] || 'text-danger';
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveSlide((prevSlide) => (prevSlide + 1) % slides.length);
     }, 5000); 
 
-    return () => clearInterval(interval); // تنظيف المؤقت عند إلغاء التثبيت
+    return () => clearInterval(interval); 
   }, [slides]);
 
   const goToNextSlide = () => {
@@ -43,12 +83,26 @@ function Hero3() {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // عرض نص التحميل أثناء جلب البيانات
+    return <div>Loading...</div>; 
   }
 
   if (error) {
-    return <div>{error}</div>; // عرض رسالة الخطأ إذا كان هناك مشكلة
+    return <div>{error}</div>; 
   }
+
+  // Convert Font Awesome classes to Bootstrap Icons
+  const convertIconClass = (faIcon) => {
+    const iconMapping = {
+      'fas fa-users': 'bi bi-people-fill',
+      'fas fa-briefcase': 'bi bi-briefcase',
+      'fas fa-graduation-cap': 'bi bi-mortarboard-fill',
+      'fas fa-user-graduate': 'bi bi-backpack-fill',
+      'fas fa-book': 'bi bi-book-fill',
+      'fas fa-chalkboard-teacher': 'bi bi-person-workspace'
+    };
+    
+    return iconMapping[faIcon] || 'bi bi-people-fill';
+  };
 
   return (
     <>
@@ -58,8 +112,7 @@ function Hero3() {
             <div key={index} className={`carousel-item ${activeSlide === index ? 'active' : ''}`}>
               <img src={`http://localhost:8000/storage/${slide.image}`} className="d-block w-100" alt={`Slide ${index + 1}`} />
               <div className="carousel-caption d-none d-md-block">
-                {/* <h5>{slide.title}</h5> */}
-                {/* <p>{slide.content}</p> */}
+               
               </div>
             </div>
           ))}
@@ -89,7 +142,7 @@ function Hero3() {
                 </h1>
 
                 <p className="mb-4 mb-md-5">
-                  At LogicLeap, we’re on a mission to prepare the next generation for a future driven by innovation. Through our dynamic programs in programming, entrepreneurship, and creativity, we equip children and youth with the skills they need to thrive in a rapidly changing world.
+                  At LogicLeap, we're on a mission to prepare the next generation for a future driven by innovation. Through our dynamic programs in programming, entrepreneurship, and creativity, we equip children and youth with the skills they need to thrive in a rapidly changing world.
                 </p>
 
                 <div className="hero-buttons">
@@ -108,52 +161,27 @@ function Hero3() {
               </div>
             </div>
           </div>
-
+          
+          {/* Statistics */}
           <div className="row stats-row gy-4 mt-5" data-aos="fade-up" data-aos-delay="500">
-            <div className="col-lg-3 col-md-6">
-              <div className="stat-item">
-                <div className="stat-icon">
-                  <i className="bi bi-people-fill"></i>
+            {statistics.slice(0, 4).map((stat, index) => {
+              const textColorClass = getTextColorClass(stat.color);
+              const bootstrapIcon = convertIconClass(stat.icon);
+              
+              return (
+                <div key={stat.id || index} className="col-lg-3 col-md-6">
+                  <div className="stat-item">
+                    <div className="stat-icon">
+                      <i className={`${bootstrapIcon} ${textColorClass}`}></i>
+                    </div>
+                    <div className="stat-content">
+                      <h4>{stat.value}</h4>
+                      <p className="mb-0">{stat.title}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="stat-content">
-                  <h4>10K+</h4>
-                  <p className="mb-0">Users</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6">
-              <div className="stat-item">
-                <div className="stat-icon">
-                  <i className="bi bi-briefcase"></i>
-                </div>
-                <div className="stat-content">
-                  <h4>30+</h4>
-                  <p className="mb-0">Employees</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6">
-              <div className="stat-item">
-                <div className="stat-icon">
-                  <i className="bi bi-mortarboard-fill"></i>
-                </div>
-                <div className="stat-content">
-                  <h4>80+</h4>
-                  <p className="mb-0">Courses</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-3 col-md-6">
-              <div className="stat-item">
-                <div className="stat-icon">
-                  <i className="bi bi-backpack-fill"></i>
-                </div>
-                <div className="stat-content">
-                  <h4>6K+</h4>
-                  <p className="mb-0">Students</p>
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>

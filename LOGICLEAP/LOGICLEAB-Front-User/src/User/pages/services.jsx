@@ -3,7 +3,6 @@ import { Tab, Nav } from 'react-bootstrap'
 import Features from '../components/Features'
 import RegistrationServices from './registrationServices'
 import NavServicse from '../components/navServices'
-import CounterServices from '../components/counterServices'
 import Partner from '../components/partner'
 import Header from '../components/header';
 import Footer from '../components/footer';
@@ -30,9 +29,7 @@ function Services() {
     </div>
 </div>
 
-  {/* Stats Section */}
-  <CounterServices />
-  {/* /Stats Section */}
+
 
   {/* Services Section */}
   
