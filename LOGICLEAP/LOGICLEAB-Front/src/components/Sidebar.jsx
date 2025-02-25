@@ -152,6 +152,14 @@ const Sidebar = () => {
                                 <span className="hide-menu">Statistics Management</span>
                             </Link>
                         </li>
+                         <li className={`sidebar-item ${location.pathname === '/FormSubmissionsManagement' ? 'active' : ''}`}>
+                            <Link className="sidebar-link" to="/FormSubmissionsManagement">
+                                <span>
+                                <Icon icon="mdi:chart-bar" className="fs-6" />
+                                </span>
+                                <span className="hide-menu">Form Submissions</span>
+                            </Link>
+                        </li>
                     </ul>
                 </nav>
             </div>

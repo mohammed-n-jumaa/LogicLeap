@@ -11,7 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 const CourseDetails = () => {
   const [program, setProgram] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { id } = useParams(); 
+  const { id } = useParams();
 
   useEffect(() => {
     // Fetch program data from Laravel backend
@@ -45,6 +45,16 @@ const CourseDetails = () => {
     return `http://localhost:8000/storage/${cleanedPath}`;
   };
 
+  // Check if gallery has any images
+  const hasGalleryImages = () => {
+    if (!program?.galleries || program.galleries.length === 0) return false;
+    
+    // Check if any gallery has images
+    return program.galleries.some(gallery => 
+      gallery.images && gallery.images.length > 0
+    );
+  };
+
   if (loading) {
     return <div className="text-center py-5"><div className="spinner-border" role="status"></div></div>;
   }
@@ -67,9 +77,9 @@ const CourseDetails = () => {
     return (
       <div
         className={className}
-        style={{ 
-          ...style, 
-          display: "block", 
+        style={{
+          ...style,
+          display: "block",
           background: "rgba(0,0,0,0.5)",
           borderRadius: "50%",
           width: "40px",
@@ -88,15 +98,15 @@ const CourseDetails = () => {
       </div>
     );
   };
-  
+
   const PrevArrow = (props) => {
     const { className, style, onClick } = props;
     return (
       <div
         className={className}
-        style={{ 
-          ...style, 
-          display: "block", 
+        style={{
+          ...style,
+          display: "block",
           background: "rgba(0,0,0,0.5)",
           borderRadius: "50%",
           width: "40px",
@@ -144,6 +154,18 @@ const CourseDetails = () => {
       position: relative;
       padding: 0 50px;
     }
+
+    .empty-gallery {
+      width: 100%;
+      height: 200px;
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 100px;
+      border-bottom: 1px solid #e7e7e7;
+    }
   `;
 
   // Slider settings with custom arrows
@@ -151,7 +173,7 @@ const CourseDetails = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 5,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -176,11 +198,12 @@ const CourseDetails = () => {
   return (
     <>
       <Header />
-      
-      {/* Custom styles for slider arrows */}
+
+      {/* Custom styles for slider arrows and empty gallery */}
       <style>{sliderStyles}</style>
 
-      {program.galleries && program.galleries.length > 0 && (
+      {/* Gallery Section - Check if has images */}
+      {hasGalleryImages() ? (
         <div
           className="gallery-slider"
           style={{
@@ -240,6 +263,12 @@ const CourseDetails = () => {
             </Slider>
           </div>
         </div>
+      ) : (
+        <div className="empty-gallery">
+          <i className="bi bi-images" style={{ fontSize: "48px", color: "#6c757d", marginBottom: "8px" }}></i>
+          <h4 className="text-muted">Course Overview</h4>
+          <p className="text-center text-muted px-4">Explore our comprehensive curriculum and program details below</p>
+        </div>
       )}
 
       {/* Course Header */}
@@ -277,7 +306,9 @@ const CourseDetails = () => {
                 <div className="card-body">
                   <h3 className="card-title">Course Details</h3>
                   <ul className="list-unstyled">
-                    <li><strong>Duration:</strong> {program.duration} {program.duration > 1 ? 'Weeks' : 'Week'}</li>
+                    <li>
+                      <strong>Duration:</strong> {program.duration} {program.duration > 1 ? 'Hours' : 'Hour'}
+                    </li>
                     <li><strong>Dates:</strong> {new Date(program.start_date).toLocaleDateString()} - {new Date(program.end_date).toLocaleDateString()}</li>
                     <li><strong>Mode:</strong> {program.mode.charAt(0).toUpperCase() + program.mode.slice(1)}</li>
                     <li><strong>Location:</strong> {program.location}</li>
@@ -309,7 +340,7 @@ const CourseDetails = () => {
                   </div>
                 </div>
               )}
-              
+
               {/* Program Terms */}
               {programTerms.length > 0 && (
                 <div className="course-section mt-4">

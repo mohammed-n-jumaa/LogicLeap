@@ -18,6 +18,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\StatisticController;
+use App\Http\Controllers\FormSubmissionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,11 @@ Route::get('/user/{userId}/confirmed-programs', [RegistrationController::class, 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/validate-register', [AuthController::class, 'validateRegister']);
 // Public Routes (No Protection)
+
+// Add these to your routes/api.php
+Route::post('/form-submissions', [FormSubmissionController::class, 'store']);
+Route::get('/form-submissions', [FormSubmissionController::class, 'index']);
+Route::get('/form-submissions/{id}', [FormSubmissionController::class, 'show']);
 
 // Gallery Routes
 Route::get('/galleries', [GalleryController::class, 'index']);

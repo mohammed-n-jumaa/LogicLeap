@@ -23,6 +23,7 @@ import Login from './pages/Login';
 import ProtectedRoute from './ProtectedRoute'; 
 import Gallery from './pages/Gallery';
 import StatisticsManagement from './pages/StatisticsManagement';
+import FormSubmissionsManagement from './pages/FormSubmissionsManagement';
 
 const App = () => {
     const location = useLocation(); 
@@ -134,6 +135,10 @@ const App = () => {
                                       <Route 
                         path="/StatisticsManagement"
                         element={<ProtectedRoute element={<StatisticsManagement />} requiredRole={['admin', 'super_admin']}/>}
+                    />
+                    <Route 
+                        path="/FormSubmissionsManagement" 
+                        element={<ProtectedRoute element={<FormSubmissionsManagement />} requiredRole={['admin', 'super_admin']} />} 
                     />
                 </Routes>
             </div>

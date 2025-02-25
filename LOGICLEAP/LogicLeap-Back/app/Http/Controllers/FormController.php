@@ -18,7 +18,7 @@ class FormController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string', // أضف هذا الحقل
+            'description' => 'nullable|string', 
             'program_id' => 'required|exists:programs,id',
             'fields' => 'required|array',
             'fields.*.name' => 'required|string',
