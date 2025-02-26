@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SiteService extends Model
 {
+    
     use HasFactory, SoftDeletes; 
     protected $fillable = ['title', 'description', 'price', 'status']; 
+    protected $table = 'site_services';
 
-  
     protected $dates = ['deleted_at'];
 
     public function serviceRequests()

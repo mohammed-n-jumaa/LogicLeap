@@ -74,7 +74,7 @@ function About() {
                       <i className="bi bi-telephone-fill" />
                       <div>
                         <p className="contact-label">Call us anytime</p>
-                        <p className="contact-number">+962 81616814</p>
+                        <p className="contact-number">+962 787665773</p>
                       </div>
                     </div>
                   </div>

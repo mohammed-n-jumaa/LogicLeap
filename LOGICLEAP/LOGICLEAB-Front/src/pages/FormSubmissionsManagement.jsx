@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import '../assets/css/styles.min.css';
 import LoadingSpinner from '../components/LoadingSpinner';
+import * as XLSX from 'xlsx';
 
 const FormSubmissionsManagement = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -11,6 +12,7 @@ const FormSubmissionsManagement = () => {
   const [programsList, setProgramsList] = useState([]);
   const [detailSubmission, setDetailSubmission] = useState(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [formFields, setFormFields] = useState({});  // Store form field definitions
 
   // States for search, pagination, and loading
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +21,7 @@ const FormSubmissionsManagement = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [exporting, setExporting] = useState(false);
 
   // Fetch submissions when the component loads
   useEffect(() => {
@@ -43,6 +46,22 @@ const FormSubmissionsManagement = () => {
         });
         setPrograms(programsMap);
         setProgramsList(programsArray);
+        
+        // Fetch forms to get field definitions with questions
+        const formsResponse = await axios.get('http://localhost:8000/api/forms');
+        const fieldsMap = {};
+        formsResponse.data.forEach(form => {
+          fieldsMap[form.id] = {};
+          form.fields.forEach(field => {
+            // Store the mapping of field name to its question
+            fieldsMap[form.id][field.name] = {
+              question: field.question || field.label, // Use question if available, otherwise use label
+              label: field.label,
+              type: field.type
+            };
+          });
+        });
+        setFormFields(fieldsMap);
         
         setError(null);
       } catch (error) {
@@ -101,10 +120,63 @@ const FormSubmissionsManagement = () => {
     return programs[programId] || programId;
   };
 
+  // Get field question from field name
+  const getFieldQuestion = (formId, fieldName) => {
+    if (formFields[formId] && formFields[formId][fieldName]) {
+      return formFields[formId][fieldName].question;
+    }
+    return fieldName; // Fallback to field name if question not found
+  };
+
   // Reset pagination when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, selectedProgram, itemsPerPage]);
+
+  // Export to Excel function
+  const exportToExcel = async () => {
+    setExporting(true);
+    try {
+      // Prepare data for export
+      const exportData = filteredSubmissions.map(submission => {
+        const baseData = {
+          'Submission ID': submission.id,
+          'Form ID': submission.form_id,
+          'Program': getProgramTitle(submission.program_id),
+          'Submission Date': formatDate(submission.submitted_at),
+          'IP Address': submission.ip_address
+        };
+        
+        // Add form values to the data if available
+        if (submission.values) {
+          Object.entries(submission.values).forEach(([key, value]) => {
+            const question = getFieldQuestion(submission.form_id, key);
+            baseData[question] = typeof value === 'object' ? JSON.stringify(value) : 
+                               Array.isArray(value) ? value.join(', ') : value.toString();
+          });
+        }
+        
+        return baseData;
+      });
+      
+      // Create worksheet
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      
+      // Create workbook
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Form Submissions');
+      
+      // Generate Excel file
+      const fileName = `FormSubmissions_${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+      
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      setError('Failed to export data to Excel. Please check the console for more details.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
@@ -169,6 +241,25 @@ const FormSubmissionsManagement = () => {
                       <option value="50">50</option>
                     </select>
                   </div>
+
+                  {/* Excel Export Button */}
+                  <button 
+                    className="btn btn-success" 
+                    onClick={exportToExcel}
+                    disabled={exporting || loading || filteredSubmissions.length === 0}
+                  >
+                    {exporting ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-file-excel me-2"></i>
+                        Export to Excel
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 <div className="table-responsive">
@@ -206,35 +297,37 @@ const FormSubmissionsManagement = () => {
                   </table>
                 </div>
 
-                {/* Pagination Controls */}
+                {/* Pagination Controls with Excel Export Button */}
                 <div className="d-flex justify-content-between align-items-center mt-3">
                   <div className="text-muted fs-13">
                     Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredSubmissions.length)} of {filteredSubmissions.length} entries
                   </div>
-                  <nav>
-                    <ul className="pagination pagination-primary mb-0">
-                      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button className="page-link" 
-                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>
-                          <i className="fas fa-chevron-left"></i>
-                        </button>
-                      </li>
-                      {[...Array(totalPages)].map((_, i) => (
-                        <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                  <div className="d-flex align-items-center gap-2">
+                    <nav>
+                      <ul className="pagination pagination-primary mb-0">
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                           <button className="page-link" 
-                                  onClick={() => setCurrentPage(i + 1)}>
-                            {i + 1}
+                                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>
+                            <i className="fas fa-chevron-left"></i>
                           </button>
                         </li>
-                      ))}
-                      <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button className="page-link" 
-                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>
-                          <i className="fas fa-chevron-right"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </nav>
+                        {[...Array(totalPages)].map((_, i) => (
+                          <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                            <button className="page-link" 
+                                    onClick={() => setCurrentPage(i + 1)}>
+                              {i + 1}
+                            </button>
+                          </li>
+                        ))}
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                          <button className="page-link" 
+                                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>
+                            <i className="fas fa-chevron-right"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
                 </div>
               </div>
             </div>
@@ -272,14 +365,14 @@ const FormSubmissionsManagement = () => {
                     <table className="table table-bordered">
                       <thead>
                         <tr>
-                          <th>Field</th>
+                          <th>Question</th>
                           <th>Value</th>
                         </tr>
                       </thead>
                       <tbody>
                         {detailSubmission.values && Object.entries(detailSubmission.values).map(([key, value]) => (
                           <tr key={key}>
-                            <td>{key}</td>
+                            <td>{getFieldQuestion(detailSubmission.form_id, key)}</td>
                             <td>
                               {typeof value === 'object' 
                                 ? JSON.stringify(value) 

@@ -28,7 +28,7 @@ function Courses() {
           image: program.image ? `http://localhost:8000/storage/${program.image}` : null,
         }));
 
-        // تعيين البرامج والفئات
+       
         setPrograms(programsWithImagePath);
         setCategories(categoriesResponse.data);
         setError(null);
@@ -77,7 +77,7 @@ function Courses() {
                       <li><strong>Price:</strong> {program.price}</li>
                     </ul>
                     <div className="d-flex justify-content-between align-items-center">
-                      <span className="text-muted">{program.duration}</span>
+                      <span className="text-muted">{program.duration} hours </span>
                       <Link to={`/courseDetails2/${program.id}`} className="btn btn-primary me-0 me-sm-2 mx-1 mt-1">Enroll</Link>
                     </div>
                   </div>

@@ -171,7 +171,7 @@ function Header({ onLogout }) {
             padding: 10px 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             height: 80px; 
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto; 
             margin-top: 20px; 
           }

@@ -32,18 +32,18 @@ const CourseDetails = () => {
     fetchProgram();
   }, [id]);
 
-  // وظيفة فتح النافذة المنبثقة للصورة المكبرة
+  
   const openLightbox = (imagePath) => {
     setCurrentImage(imagePath);
     setLightboxOpen(true);
-    // منع التمرير في الصفحة عند فتح النافذة المنبثقة
+ 
     document.body.style.overflow = 'hidden';
   };
 
-  // وظيفة إغلاق النافذة المنبثقة للصورة المكبرة
+ 
   const closeLightbox = () => {
     setLightboxOpen(false);
-    // إعادة تفعيل التمرير في الصفحة عند إغلاق النافذة المنبثقة
+    
     document.body.style.overflow = 'auto';
   };
 
@@ -291,6 +291,39 @@ const CourseDetails = () => {
     .image-loading {
       animation: pulse 1.5s infinite;
     }
+    
+    /* تنسيق زر التسجيل الرئيسي */
+    .register-button-container {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    
+   .main-register-button {
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(255, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  background-color: #ff4c4c; /* لون الزر الأساسي */
+  border: none;
+}
+
+.main-register-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 128, 0, 0.2);
+  background-color: #008000; /* لون الزر عند التحويم */
+}
+
+    
+    .main-register-button i {
+      transition: transform 0.3s ease;
+    }
+    
+    .main-register-button:hover i {
+      transform: translateX(5px);
+    }
   `;
 
   // Slider settings with custom arrows
@@ -424,6 +457,15 @@ const CourseDetails = () => {
         <p className="lead">{program.category ? program.category.name : ''}</p>
       </div>
 
+      {/* New Registration Button - Prominently Displayed */}
+      {program.status === 'active' && (
+        <div className="register-button-container">
+          <a href={`/registrationCourses?program=${program.id}`} className="btn btn-primary main-register-button">
+            Register Now <i className="bi bi-arrow-right ms-2"></i>
+          </a>
+        </div>
+      )}
+
       <div className="container">
         <div className="course-content mt-2">
           <div className="row mt-4">
@@ -443,6 +485,9 @@ const CourseDetails = () => {
                       <li key={index} className="course-feature">✓ {item}</li>
                     ))}
                   </ul>
+                  <a href={`/registrationCourses?program=${program.id}`} className="btn btn-primary w-100 mt-3">
+                      Register <i className="bi bi-arrow-right ms-2"></i>
+                    </a>
                 </div>
               )}
             </div>
@@ -461,6 +506,8 @@ const CourseDetails = () => {
                     <li><strong>Location:</strong> {program.location}</li>
                     <li><strong>Price:</strong> {priceDisplay}</li>
                   </ul>
+                  
+                  {/* The Register button has been removed from here */}
                 </div>
               </div>
 
@@ -512,16 +559,6 @@ const CourseDetails = () => {
                 </div>
               )}
             </div>
-
-            {/* Register Button */}
-            {program.status === 'active' && (
-              <div className="mt-4">
-                <a href={`/registrationCourses?program=${program.id}`} className="btn btn-primary">
-                  Register
-                  <i className="bi bi-arrow-right ms-2" />
-                </a>
-              </div>
-            )}
           </div>
         </div>
         <hr />

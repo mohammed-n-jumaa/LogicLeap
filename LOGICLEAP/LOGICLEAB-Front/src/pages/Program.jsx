@@ -7,8 +7,8 @@ import ProgramDetailsModal from '../components/program/ProgramDetailsModal';
 import EditProgramModal from '../components/program/EditProgramModal';
 import '../assets/css/styles.min.css';
 import axios from 'axios';
-import Swal from 'sweetalert2'; // Import SweetAlert
-import LoadingSpinner from '../components/LoadingSpinner'; // Import LoadingSpinner
+import Swal from 'sweetalert2'; 
+import LoadingSpinner from '../components/LoadingSpinner'; 
 
 const Program = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Program = () => {
   }, []);
 
   const fetchPrograms = async () => {
-    setLoading(true); // Set loading to true before fetching data
+    setLoading(true); 
     try {
       const response = await axios.get('http://localhost:8000/api/programs');
       const programsWithImagePath = response.data.map((program) => ({
@@ -38,7 +38,7 @@ const Program = () => {
       console.error(err.message);
       setError('Failed to fetch programs.');
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setLoading(false); 
     }
   };
 

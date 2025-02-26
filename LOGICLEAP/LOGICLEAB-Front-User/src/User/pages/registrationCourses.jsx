@@ -73,23 +73,57 @@ const CustomServiceForm = () => {
     });
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  // In CustomServiceForm.js, modify the handleSubmit function:
 
-    try {
-      setFormSubmitted(true);
-      console.log('Submitting form values:', formValues);
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-      const response = await axios.post('http://localhost:8000/api/form-submissions', {
-        form_id: formData.id,
-        program_id: formData.program_id,
-        values: formValues
-      });
+  try {
+    setFormSubmitted(true);
+    console.log('Submitting form values:', formValues);
 
-      console.log('Form submission response:', response.data);
-      
-      // Show success toast notification
-      toast.success('Your request has been sent successfully!', {
+    // Get authentication token from localStorage
+    const token = localStorage.getItem('auth_token'); // or however you store your auth token
+    
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await axios.post('http://localhost:8000/api/form-submissions', {
+      form_id: formData.id,
+      program_id: formData.program_id,
+      values: formValues
+    }, { headers });
+
+    console.log('Form submission response:', response.data);
+    
+    // Show success toast notification
+    toast.success('Your request has been sent successfully!', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+
+    const resetValues = {};
+    formData.fields.forEach(field => {
+      resetValues[field.name] = '';
+    });
+    setFormValues(resetValues);
+    setFormSubmitted(false);
+  } catch (err) {
+    console.error('Error submitting form:', err);
+    
+    // Check if it's an authentication error
+    if (err.response?.status === 401) {
+      // Redirect to login page
+      window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+      toast.error('Please log in to submit this form', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -99,15 +133,7 @@ const CustomServiceForm = () => {
         progress: undefined,
         theme: "colored",
       });
-
-      const resetValues = {};
-      formData.fields.forEach(field => {
-        resetValues[field.name] = '';
-      });
-      setFormValues(resetValues);
-      setFormSubmitted(false);
-    } catch (err) {
-      console.error('Error submitting form:', err);
+    } else {
       setError('Error submitting form: ' + (err.response?.data?.message || err.message));
       
       // Show error toast notification
@@ -121,10 +147,11 @@ const CustomServiceForm = () => {
         progress: undefined,
         theme: "colored",
       });
-      
-      setFormSubmitted(false);
     }
-  };
+    
+    setFormSubmitted(false);
+  }
+};
 
   // Render form field based on type
   const renderField = (field) => {
