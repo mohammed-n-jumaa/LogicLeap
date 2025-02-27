@@ -21,7 +21,7 @@ import RegistrationServices from './User/pages/registrationServices';
 import Courses2 from './User/pages/courses2';
 import Register from './User/pages/register';
 import Profile from './User/pages/Profile'; // Add this import
-
+import GalleryPage from './User/pages/GalleryPage';
 // Components
 import Header from './User/components/header';
 import Partner from './User/components/partner';
@@ -35,7 +35,7 @@ import Hero2 from './User/components/hero2';
 import Hero3 from './User/components/hero3';
 import Partner2 from './User/components/partner2';
 import Header2 from './User/components/header2';
-
+ 
 // Styles
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -216,9 +216,15 @@ function App() {
               <NavServices />
             </ProtectedRoute>
           } />
+           <Route path='/GalleryPage' element={
+            <ProtectedRoute>
+              <GalleryPage />
+            </ProtectedRoute>
+          } />
         </Routes>
       </BrowserRouter>
     </div>
+
   );
 }
 

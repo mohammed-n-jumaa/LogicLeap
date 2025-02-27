@@ -10,32 +10,7 @@ function courses() {
   return (
 <main className="main">
  <Header/>
-  {/* Hero Section */}
-  {/* <div className="page-title light-background">
-      <div className="container">
-        <h1>Starter Page</h1>
-        <nav className="breadcrumbs">
-          <ol>
-            <li><a href="index.html">Home</a></li>
-            <li className="current">Starter Page</li>
-          </ol>
-        </nav>
-      </div>
-    </div> */}
-
-  {/* <div id="carouselExampleDark" className="carousel-inner page-title" data-bs-ride="carousel">
-  <img src="assets/img/code5.jpg" className="d-block w-100" />
-  <div className="container">
-        <h1>Starter Page</h1>
-        <nav className="breadcrumbs">
-          <ol>
-            <li><a href="index.html">Home</a></li>
-            <li className="current">Starter Page</li>
-          </ol>
-        </nav>
-      </div>
-  </div> */}
-  
+   
   <div className="page-title" style={{ backgroundImage: 'url(assets/img/code5.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
   <div className="container">
     <h1>Starter Page</h1>
@@ -74,7 +49,7 @@ function courses() {
               <span className="amount">9.9</span>
               {/* <span class="period">/ month</span> */}
             </div>
-            {/* <p class="description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam.</p> */}
+
             <h4>Front-End Included:</h4>
             <ul className="features-list">
               <li>

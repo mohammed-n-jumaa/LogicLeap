@@ -14,7 +14,7 @@ class Gallery extends Model
 
     protected $fillable = [
         'program_id',
-        'status'  // Removed image_path as it's now in GalleryImage model
+        'status'  
     ];
 
     /**
