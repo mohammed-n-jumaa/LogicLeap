@@ -21,19 +21,39 @@ class DashboardController extends Controller
     }
 
     // Fetch the most requested programs (top 3)
-    public function mostRequested()
-    {
-        try {
-            $mostRequested = Program::withCount('registrations')
-                ->orderBy('registrations_count', 'desc')
-                ->take(3)
-                ->get();
-            return response()->json($mostRequested);
-        } catch (\Exception $e) {
-            \Log::error('Error fetching most requested programs: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred while fetching data.'], 500);
-        }
+   // Fetch the most requested programs (top 3)
+public function mostRequested()
+{
+    try {
+        // Get total registration count
+        $totalCount = Registration::count();
+        
+        // Get programs with registration counts
+        $programs = Program::withCount('registrations')
+            ->orderBy('registrations_count', 'desc')
+            ->take(3)
+            ->get();
+            
+        // Transform the data to match what the React component expects
+        $result = $programs->map(function($program) use ($totalCount) {
+            // Calculate percentage
+            $percentage = $totalCount > 0 
+                ? round(($program->registrations_count / $totalCount) * 100) 
+                : 0;
+                
+            return [
+                'id' => $program->id,
+                'title' => $program->title,
+                'requestCount' => $percentage
+            ];
+        });
+        
+        return response()->json($result);
+    } catch (\Exception $e) {
+        \Log::error('Error fetching most requested programs: ' . $e->getMessage());
+        return response()->json(['error' => 'An error occurred while fetching data.'], 500);
     }
+}
 
     // Fetch the latest 3 courses
     public function getCourses()

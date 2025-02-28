@@ -37,7 +37,7 @@ const GalleryPage = () => {
         gallery.images.forEach(image => {
           combinedImages.push({
             ...image,
-            galleryTitle: gallery.title || `معرض ${gallery.id}`
+            galleryTitle: gallery.title || `Gallery ${gallery.id}`
           });
         });
       }
@@ -54,7 +54,7 @@ const GalleryPage = () => {
       }
     } catch (error) {
       console.error('Error fetching galleries:', error);
-      setError('فشل في تحميل المعرض');
+      setError('Failed to load gallery');
     } finally {
       setLoading(false);
     }
@@ -93,7 +93,7 @@ const GalleryPage = () => {
     <div className="gallery-page " style={{ 
       backgroundColor: '#f9f9f9', 
       minHeight: '100vh',
-      direction: 'rtl'
+      direction: 'ltr'
     }}>
       {/* Spacing for pushing header down */}
       <div style={{height: '40px'}}></div>
@@ -121,7 +121,7 @@ const GalleryPage = () => {
             fontWeight: 'bold',
             marginBottom: '10px',
             textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
-          }}>gallery </h1>
+          }}>Gallery</h1>
           <p style={{ fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto', opacity: 0.9 }}>
           </p>
         </motion.div>
@@ -174,7 +174,7 @@ const GalleryPage = () => {
                 margin: '0 auto'
               }}
             />
-            <p style={{ marginTop: '20px', color: '#666', fontSize: '1.1rem' }}>جاري تحميل المعرض...</p>
+            <p style={{ marginTop: '20px', color: '#666', fontSize: '1.1rem' }}>Loading gallery...</p>
           </div>
         )}
 
@@ -293,7 +293,7 @@ const GalleryPage = () => {
                 >
                   <img
                     src={formatImageUrl(image.image_path)}
-                    alt={`صورة ${index + 1}`}
+                    alt={`Image ${index + 1}`}
                     style={{
                       width: '100%',
                       height: '100%',
@@ -307,7 +307,7 @@ const GalleryPage = () => {
                   <div style={{
                     position: 'absolute',
                     top: '15px',
-                    right: '15px',
+                    left: '15px',
                     background: 'rgba(167, 212, 119, 0.8)',
                     color: 'white',
                     padding: '5px 12px',
@@ -364,8 +364,8 @@ const GalleryPage = () => {
             color: '#666'
           }}>
             <IoImagesOutline size={60} style={{ color: '#ccc', margin: '0 auto 20px' }} />
-            <h3>لا توجد صور متاحة</h3>
-            <p>سيتم إضافة صور جديدة قريباً</p>
+            <h3>No images available</h3>
+            <p>New images will be added soon</p>
           </div>
         )}
       </div>
@@ -406,7 +406,7 @@ const GalleryPage = () => {
                 borderRadius: '15px',
                 overflow: 'hidden',
                 backgroundColor: 'transparent',
-                marginTop : '60px'
+                marginTop: '60px'
               }}
               onClick={handleModalContentClick}
             >
@@ -420,7 +420,7 @@ const GalleryPage = () => {
               }}>
                 <img
                   src={formatImageUrl(selectedImage)}
-                  alt="صورة مكبرة"
+                  alt="Enlarged image"
                   style={{
                     display: 'block',
                     maxWidth: '100%',
@@ -436,7 +436,7 @@ const GalleryPage = () => {
                 <div style={{
                   position: 'absolute',
                   top: '20px',
-                  right: '20px',
+                  left: '20px',
                   background: 'rgba(0,0,0,0.6)',
                   color: 'white',
                   padding: '8px 15px',
@@ -455,7 +455,7 @@ const GalleryPage = () => {
                   style={{
                     position: 'absolute',
                     top: '20px',
-                    left: '20px',
+                    right: '20px',
                     backgroundColor: '#EB4747',
                     color: 'white',
                     border: 'none',
@@ -477,15 +477,14 @@ const GalleryPage = () => {
                 {allImages.length > 1 && (
                   <>
                     <motion.button
-                      whileHover={{ scale: 1.1, x: -5 }}
+                      whileHover={{ scale: 1.1, x: 5 }}
                       whileTap={{ scale: 0.95 }}
                       disabled={currentImageIndex === 0}
                       onClick={() => navigateImage(-1)}
                       style={{
                         position: 'absolute',
-                        right: '20px',
+                        left: '20px',
                         top: '50%',
-                        // transform: 'translateY(50%)',
                         backgroundColor: currentImageIndex === 0 ? 'rgba(100,100,100,0.5)' : 'rgba(167, 212, 119, 0.8)',
                         color: 'white',
                         border: 'none',
@@ -500,7 +499,7 @@ const GalleryPage = () => {
                         backdropFilter: 'blur(5px)'
                       }}
                     >
-                      <IoArrowForward size={28} />
+                      <IoArrowBack size={28} />
                     </motion.button>
                     
                     <motion.button
@@ -510,9 +509,8 @@ const GalleryPage = () => {
                       onClick={() => navigateImage(1)}
                       style={{
                         position: 'absolute',
-                        left: '20px',
+                        right: '20px',
                         top: '50%',
-                        // transform: 'translateY(50%)',
                         backgroundColor: currentImageIndex === allImages.length - 1 ? 'rgba(100,100,100,0.5)' : 'rgba(167, 212, 119, 0.8)',
                         color: 'white',
                         border: 'none',
@@ -527,7 +525,7 @@ const GalleryPage = () => {
                         backdropFilter: 'blur(5px)'
                       }}
                     >
-                      <IoArrowBack size={28} />
+                      <IoArrowForward size={28} />
                     </motion.button>
                   </>
                 )}

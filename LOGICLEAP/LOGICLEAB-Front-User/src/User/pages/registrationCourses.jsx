@@ -4,10 +4,9 @@ import { Button, Spinner, Alert } from 'react-bootstrap';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import axios from 'axios';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -19,12 +18,12 @@ const CustomServiceForm = () => {
   const [formData, setFormData] = useState({});
   const [formValues, setFormValues] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [programActive, setProgramActive] = useState(true); // New state for program status
   
- 
   const { id: urlParamId } = useParams();
   const query = useQuery();
   const queryParamId = query.get('program');
-  
+  const navigate = useNavigate(); // For redirecting users
 
   const programId = queryParamId || urlParamId;
 
@@ -46,11 +45,20 @@ const CustomServiceForm = () => {
         if (response.data && response.data.length > 0) {
           setFormData(response.data[0]);
 
-          const initialValues = {};
-          response.data[0].fields.forEach(field => {
-            initialValues[field.name] = '';
-          });
-          setFormValues(initialValues);
+          // Check program status
+          if (response.data[0].program && response.data[0].program.status !== 'active') {
+            setProgramActive(false);
+            // You could redirect here instead of showing an error message
+            // navigate('/inactive-program'); // If you have a dedicated page
+            
+            setError('This program is currently not active');
+          } else {
+            const initialValues = {};
+            response.data[0].fields.forEach(field => {
+              initialValues[field.name] = '';
+            });
+            setFormValues(initialValues);
+          }
         } else {
           setError('No form found for this program');
         }
@@ -63,7 +71,7 @@ const CustomServiceForm = () => {
     };
 
     fetchFormData();
-  }, [programId]);
+  }, [programId, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,71 +81,31 @@ const CustomServiceForm = () => {
     });
   };
 
-  // In CustomServiceForm.js, modify the handleSubmit function:
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-const handleSubmit = async (event) => {
-  event.preventDefault();
+    try {
+      setFormSubmitted(true);
+      console.log('Submitting form values:', formValues);
 
-  try {
-    setFormSubmitted(true);
-    console.log('Submitting form values:', formValues);
-
-    // Get authentication token from localStorage
-    const token = localStorage.getItem('auth_token'); // or however you store your auth token
-    
-    const headers = {};
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    const response = await axios.post('http://localhost:8000/api/form-submissions', {
-      form_id: formData.id,
-      program_id: formData.program_id,
-      values: formValues
-    }, { headers });
-
-    console.log('Form submission response:', response.data);
-    
-    // Show success toast notification
-    toast.success('Your request has been sent successfully!', {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
-
-    const resetValues = {};
-    formData.fields.forEach(field => {
-      resetValues[field.name] = '';
-    });
-    setFormValues(resetValues);
-    setFormSubmitted(false);
-  } catch (err) {
-    console.error('Error submitting form:', err);
-    
-    // Check if it's an authentication error
-    if (err.response?.status === 401) {
-      // Redirect to login page
-      window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
-      toast.error('Please log in to submit this form', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    } else {
-      setError('Error submitting form: ' + (err.response?.data?.message || err.message));
+      // Get authentication token from localStorage
+      const token = localStorage.getItem('auth_token'); // or however you store your auth token
       
-      // Show error toast notification
-      toast.error('An error occurred while submitting the form. Please try again.', {
+      const headers = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await axios.post('http://localhost:8000/api/form-submissions', {
+        form_id: formData.id,
+        program_id: formData.program_id,
+        values: formValues
+      }, { headers });
+
+      console.log('Form submission response:', response.data);
+      
+      // Show success toast notification
+      toast.success('Your request has been sent successfully!', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -147,11 +115,49 @@ const handleSubmit = async (event) => {
         progress: undefined,
         theme: "colored",
       });
+
+      const resetValues = {};
+      formData.fields.forEach(field => {
+        resetValues[field.name] = '';
+      });
+      setFormValues(resetValues);
+      setFormSubmitted(false);
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      
+      // Check if it's an authentication error
+      if (err.response?.status === 401) {
+        // Redirect to login page
+        window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+        toast.error('Please log in to submit this form', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
+        setError('Error submitting form: ' + (err.response?.data?.message || err.message));
+        
+        // Show error toast notification
+        toast.error('An error occurred while submitting the form. Please try again.', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+      
+      setFormSubmitted(false);
     }
-    
-    setFormSubmitted(false);
-  }
-};
+  };
 
   // Render form field based on type
   const renderField = (field) => {
@@ -257,6 +263,36 @@ const handleSubmit = async (event) => {
         return null;
     }
   };
+
+  // If program is not active, you can redirect or show a custom message
+  if (!loading && !programActive) {
+    return (
+      <>
+        <Header />
+        <div className="bg-light py-5">
+          <div className="container">
+            <div className="row justify-content-center">
+              <div className="col-md-8">
+                <div className="card shadow border-0 rounded-4">
+                  <div className="card-body p-5 text-center">
+                    <div className="mb-4">
+                      <i className="bi bi-exclamation-circle text-warning" style={{ fontSize: '4rem' }}></i>
+                    </div>
+                    <h2 className="card-title mb-3 fw-bold">Program Not Available</h2>
+                    <p className="lead mb-4">This program is currently inactive or not available for registration.</p>
+                    <a href="/courses2" className="btn btn-primary btn-lg rounded-pill px-5">
+                      View Available Programs
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

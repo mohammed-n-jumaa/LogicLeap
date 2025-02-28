@@ -199,7 +199,7 @@ function Footer() {
                       transition={{ duration: 0.3 }}
                       style={{ position: 'relative' }}
                     >
-                      <Link to={`/gallery/${image.id || index}`}>
+                      <Link to="/gallerypage">
                         <motion.div 
                           whileHover={{ 
                             scale: 1.05,
@@ -250,12 +250,12 @@ function Footer() {
         </div>
       </div>
 
-      {/* حقوق الطبع والنشر */}
       <div className="container copyright text-center mt-4">
         <div className="credits">
-          {/* حقوق النشر أو الروابط */}
+          <p>© 2025 LogicLeap. All rights reserved.</p>
         </div>
       </div>
+
     </footer>
   );
 }

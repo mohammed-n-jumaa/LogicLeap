@@ -2,33 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/header';
 import Footer from '../components/footer';
-import axios from 'axios';  // استيراد axios
+import axios from 'axios';
 import "../assets/css/main.css";
-
 
 function Courses() {
   const [programs, setPrograms] = useState([]);
-  const [categories, setCategories] = useState([]); 
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // تحميل البرامج والفئات 
+  
+  // تحميل البرامج والفئات
   useEffect(() => {
     const fetchProgramsAndCategories = async () => {
       setLoading(true);
       try {
         const [programsResponse, categoriesResponse] = await Promise.all([
           axios.get('http://localhost:8000/api/programs'),
-          axios.get('http://localhost:8000/api/categories'), 
+          axios.get('http://localhost:8000/api/categories'),
         ]);
-
-       
-        const programsWithImagePath = programsResponse.data.map((program) => ({
+        
+        // Filter programs to only include those with status "active"
+        const activePrograms = programsResponse.data.filter(program => 
+          program.status === "active"
+        );
+        
+        const programsWithImagePath = activePrograms.map((program) => ({
           ...program,
           image: program.image ? `http://localhost:8000/storage/${program.image}` : null,
         }));
-
-       
+        
         setPrograms(programsWithImagePath);
         setCategories(categoriesResponse.data);
         setError(null);
@@ -39,10 +41,9 @@ function Courses() {
         setLoading(false);
       }
     };
-
+    
     fetchProgramsAndCategories();
   }, []);
-
   
   const getCategoryName = (categoryId) => {
     const category = categories.find(cat => cat.id === categoryId);
@@ -61,24 +62,42 @@ function Courses() {
         </div>
         <div className="container" data-aos="fade-up" data-aos-delay={100}>
           <div className="row g-4 justify-content-center">
-            {loading && <div>Loading...</div>}  
-            {error && <div>{error}</div>}     
+            {loading && <div>Loading...</div>}
+            {error && <div>{error}</div>}
+            
+            {!loading && !error && programs.length === 0 && (
+              <div className="col-12 text-center">
+                <p>No active courses available at the moment.</p>
+              </div>
+            )}
+            
             {!loading && !error && programs.map((program) => (
               <div className="col-md-3 mb-4" key={program.id}>
-                <div className="card course-card">
-                  <img src={program.image} className="card-img-top" alt="Course Image" />
-                  <div className="card-body">
+                <div className="card course-card h-100">
+                  <div className="img-container" style={{ height: "200px", overflow: "hidden" }}>
+                    <img 
+                      src={program.image}
+                      className="card-img-top"
+                      alt="Course Image"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover"
+                      }}
+                    />
+                  </div>
+                  <div className="card-body d-flex flex-column">
                     <span className="badge badge-category mb-2">
                       {getCategoryName(program.category_id)}
                     </span>
-                    <h5 className="card-title">{program.title}</h5>
+                    <h5 className="card-title text-truncate" title={program.title}>{program.title}</h5>
                     <ul className="list-unstyled">
                       <li><strong>Mode:</strong> {program.mode}</li>
                       <li><strong>Price:</strong> {program.price}</li>
                     </ul>
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-flex justify-content-between align-items-center mt-auto">
                       <span className="text-muted">{program.duration} hours </span>
-                      <Link to={`/courseDetails2/${program.id}`} className="btn btn-primary me-0 me-sm-2 mx-1 mt-1">Enroll</Link>
+                      <Link to={`/courseDetails2/${program.id}`} className="btn btn-primary me-0 me-sm-2 mx-1">Enroll</Link>
                     </div>
                   </div>
                 </div>
@@ -92,6 +111,5 @@ function Courses() {
     </>
   );
 }
-
 
 export default Courses;

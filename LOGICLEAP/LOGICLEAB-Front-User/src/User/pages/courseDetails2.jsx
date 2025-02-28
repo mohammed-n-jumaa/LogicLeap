@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,6 +12,7 @@ const CourseDetails = () => {
   const [program, setProgram] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const navigate = useNavigate();
   // إضافة حالة للصورة المكبرة
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState('');
@@ -23,6 +24,11 @@ const CourseDetails = () => {
         const response = await axios.get(`http://localhost:8000/api/programs/${id}`);
         setProgram(response.data);
         setLoading(false);
+        
+        // تحقق من حالة البرنامج، إذا كان غير نشط قم بتوجيه المستخدم للصفحة الرئيسية
+        if (response.data && response.data.status !== 'active') {
+          navigate('/');
+        }
       } catch (error) {
         console.error('Error fetching program:', error);
         setLoading(false);
@@ -30,7 +36,7 @@ const CourseDetails = () => {
     };
 
     fetchProgram();
-  }, [id]);
+  }, [id, navigate]);
 
   
   const openLightbox = (imagePath) => {
