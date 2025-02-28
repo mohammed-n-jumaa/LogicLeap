@@ -20,15 +20,15 @@ import RegistrationCourses from './User/pages/registrationCourses';
 import RegistrationServices from './User/pages/registrationServices';
 import Courses2 from './User/pages/courses2';
 import Register from './User/pages/register';
-import Profile from './User/pages/Profile'; // Add this import
+import Profile from './User/pages/Profile';
 import GalleryPage from './User/pages/GalleryPage';
+
 // Components
 import Header from './User/components/header';
 import Partner from './User/components/partner';
 import Footer from './User/components/footer';
 import Hero from './User/components/hero';
 import CounterCourses from './User/components/counterCourses';
-
 import Features from './User/components/Features';
 import NavServices from './User/components/navServices';
 import Hero2 from './User/components/hero2';
@@ -75,6 +75,32 @@ function App() {
           {/* Public Routes */}
           <Route path='/' element={<Navigate to="/home" replace />} />
           <Route path='/home' element={<Home />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/contact' element={<Contact />} />
+          <Route path='/courses' element={<Courses />} />
+          <Route path='/courses2' element={<Courses2 />} />
+          <Route path='/courseDetails' element={<CourseDetails />} />
+          <Route path='/courseDetails2/:id' element={<CourseDetails2 />} />
+          <Route path='/services' element={<Services />} />
+          <Route path='/dervicesDetails' element={<DervicesDetails />} />
+          <Route path='/serviceRequest' element={<ServiceRequest />} />
+          <Route path='/successStory' element={<SuccessStory />} />
+          <Route path='/question' element={<Question />} />
+          <Route path='/GalleryPage' element={<GalleryPage />} />
+          <Route path='/registrationServices' element={<RegistrationServices />} />
+          
+          {/* Component Routes also made public */}
+          <Route path='/hero' element={<Hero />} />
+          <Route path='/hero2' element={<Hero2 />} />
+          <Route path='/hero3' element={<Hero3 />} />
+          <Route path='/partner' element={<Partner />} />
+          <Route path='/partner2' element={<Partner2 />} />
+          <Route path='/header2' element={<Header2 />} />
+          <Route path='/features' element={<Features />} />
+          <Route path='/counterCourses' element={<CounterCourses />} />
+          <Route path='/navServices' element={<NavServices />} />
+          
+          {/* Authentication Routes */}
           <Route
             path='/login'
             element={
@@ -92,70 +118,10 @@ function App() {
             }
           />
 
-          {/* Add Profile Route */}
+          {/* Protected Routes - Only these require login */}
           <Route path='/profile' element={
             <ProtectedRoute>
               <Profile />
-            </ProtectedRoute>
-          } />
-
-          {/* Protected Page Routes */}
-          <Route path='/about' element={
-            <ProtectedRoute>
-              <About />
-            </ProtectedRoute>
-          } />
-          <Route path='/contact' element={
-            <ProtectedRoute>
-              <Contact />
-            </ProtectedRoute>
-          } />
-          <Route path='/courses' element={
-            <ProtectedRoute>
-              <Courses />
-            </ProtectedRoute>
-          } />
-          <Route path='/courses2' element={
-            <ProtectedRoute>
-              <Courses2 />
-            </ProtectedRoute>
-          } />
-          <Route path='/courseDetails' element={
-            <ProtectedRoute>
-              <CourseDetails />
-            </ProtectedRoute>
-          } />
-          <Route
-            path='/courseDetails2/:id'
-            element={
-              <ProtectedRoute>
-                <CourseDetails2 />
-              </ProtectedRoute>
-            }
-          />
-          <Route path='/services' element={
-            <ProtectedRoute>
-              <Services />
-            </ProtectedRoute>
-          } />
-          <Route path='/dervicesDetails' element={
-            <ProtectedRoute>
-              <DervicesDetails />
-            </ProtectedRoute>
-          } />
-          <Route path='/serviceRequest' element={
-            <ProtectedRoute>
-              <ServiceRequest />
-            </ProtectedRoute>
-          } />
-          <Route path='/successStory' element={
-            <ProtectedRoute>
-              <SuccessStory />
-            </ProtectedRoute>
-          } />
-          <Route path='/question' element={
-            <ProtectedRoute>
-              <Question />
             </ProtectedRoute>
           } />
           <Route path='/registrationCourses' element={
@@ -163,68 +129,9 @@ function App() {
               <RegistrationCourses />
             </ProtectedRoute>
           } />
-          <Route path='/registrationServices' element={
-            <ProtectedRoute>
-              <RegistrationServices />
-            </ProtectedRoute>
-          } />
-
-          {/* Protected Component Routes */}
-          <Route path='/hero' element={
-            <ProtectedRoute>
-              <Hero />
-            </ProtectedRoute>
-          } />
-          <Route path='/hero2' element={
-            <ProtectedRoute>
-              <Hero2 />
-            </ProtectedRoute>
-          } />
-          <Route path='/hero3' element={
-            <ProtectedRoute>
-              <Hero3 />
-            </ProtectedRoute>
-          } />
-          <Route path='/partner' element={
-            <ProtectedRoute>
-              <Partner />
-            </ProtectedRoute>
-          } />
-          <Route path='/partner2' element={
-            <ProtectedRoute>
-              <Partner2 />
-            </ProtectedRoute>
-          } />
-          <Route path='/header2' element={
-            <ProtectedRoute>
-              <Header2 />
-            </ProtectedRoute>
-          } />
-          <Route path='/features' element={
-            <ProtectedRoute>
-              <Features />
-            </ProtectedRoute>
-          } />
-          <Route path='/counterCourses' element={
-            <ProtectedRoute>
-              <CounterCourses />
-            </ProtectedRoute>
-          } />
-       
-          <Route path='/navServices' element={
-            <ProtectedRoute>
-              <NavServices />
-            </ProtectedRoute>
-          } />
-           <Route path='/GalleryPage' element={
-            <ProtectedRoute>
-              <GalleryPage />
-            </ProtectedRoute>
-          } />
         </Routes>
       </BrowserRouter>
     </div>
-
   );
 }
 
