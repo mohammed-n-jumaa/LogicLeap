@@ -3,16 +3,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../assets/css/styles.min.css';
 import Header from '../components/Header';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2'; // Import SweetAlert
-import LoadingSpinner from '../components/LoadingSpinner'; // Import LoadingSpinner
+import Swal from 'sweetalert2';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ServiceRequests = () => {
     const [requests, setRequests] = useState([]);
     const [modalRequest, setModalRequest] = useState(null);
     const [isViewModalOpen, setViewModalOpen] = useState(false);
     const [isEditModalOpen, setEditModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // Loading state
+    const [isLoading, setIsLoading] = useState(true);
 
     // حالات البحث والصفحات
     const [searchQuery, setSearchQuery] = useState('');
@@ -21,14 +20,14 @@ const ServiceRequests = () => {
 
     useEffect(() => {
         const fetchRequests = async () => {
-            setIsLoading(true); // Set loading to true before fetching data
+            setIsLoading(true);
             try {
-                const response = await axios.get('http://localhost:8000/api/service-requests');
+                const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/service-requests');
                 setRequests(response.data);
             } catch (error) {
                 console.error('Error fetching service requests:', error);
             } finally {
-                setIsLoading(false); // Set loading to false after fetching data
+                setIsLoading(false);
             }
         };
 
@@ -72,7 +71,7 @@ const ServiceRequests = () => {
             status: document.getElementById('editStatus').value
         };
 
-        axios.put(`http://localhost:8000/api/service-requests/${modalRequest.id}`, updatedRequest)
+        axios.put(`https://logicleap-769836b54d38.herokuapp.com/api/service-requests/${modalRequest.id}`, updatedRequest)
             .then(response => {
                 setRequests(requests.map(req => req.id === response.data.id ? response.data : req));
                 handleCloseModal();
@@ -93,7 +92,7 @@ const ServiceRequests = () => {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`http://localhost:8000/api/service-requests/${id}`)
+                axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/service-requests/${id}`)
                     .then(() => {
                         setRequests(requests.filter(req => req.id !== id));
                         Swal.fire('Deleted!', 'Service request has been deleted.', 'success');

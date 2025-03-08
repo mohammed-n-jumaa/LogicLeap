@@ -25,7 +25,7 @@ const Partners = () => {
   const fetchPartners = async () => {
     setLoading(true); // Set loading to true before fetching data
     try {
-      const res = await axios.get('http://localhost:8000/api/partners');
+      const res = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/partners');
       setPartners(res.data);
       setError(null);
     } catch (error) {
@@ -48,7 +48,7 @@ const Partners = () => {
     formData.append('website', newPartner.website);
 
     try {
-      await axios.post('http://localhost:8000/api/partners', formData, {
+      await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/partners', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -78,7 +78,7 @@ const Partners = () => {
     }
 
     try {
-      await axios.post(`http://localhost:8000/api/partners/${editPartner.id}`, formData, {
+      await axios.post(`https://logicleap-769836b54d38.herokuapp.com/api/partners/${editPartner.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -106,7 +106,7 @@ const Partners = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:8000/api/partners/${id}`);
+        await axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/partners/${id}`);
         fetchPartners();
         Swal.fire('Deleted!', 'Your partner has been deleted.', 'success'); // SweetAlert
       } catch (error) {
@@ -212,7 +212,7 @@ const Partners = () => {
                           <th scope="row" className="ps-0 fw-medium">{partner.id}</th>
                           <td className="fw-medium">{partner.name}</td>
                           <td className="fw-medium">
-                            <img src={`http://localhost:8000/storage/${partner.logo}`} alt={`Logo of ${partner.name}`} width="50" />
+                            <img src={`https://logicleap-769836b54d38.herokuapp.com/storage/${partner.logo}`} alt={`Logo of ${partner.name}`} width="50" />
                           </td>
                           <td className="fw-medium">
                             <a href={partner.website} target="_blank" rel="noopener noreferrer">

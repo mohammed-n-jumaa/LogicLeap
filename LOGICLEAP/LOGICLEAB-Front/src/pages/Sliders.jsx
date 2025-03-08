@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import '../assets/css/styles.min.css';
-import Swal from 'sweetalert2'; // Import SweetAlert
-import LoadingSpinner from '../components/LoadingSpinner'; // Import LoadingSpinner
+import Swal from 'sweetalert2';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Sliders = () => {
   const [sliders, setSliders] = useState([]);
@@ -24,7 +24,7 @@ const Sliders = () => {
   const fetchSliders = async () => {
     setLoading(true); // Set loading to true before fetching data
     try {
-      const response = await fetch('http://localhost:8000/api/sliders');
+      const response = await fetch('https://logicleap-769836b54d38.herokuapp.com/api/sliders');
       if (!response.ok) {
         throw new Error('Failed to fetch sliders');
       }
@@ -48,7 +48,7 @@ const Sliders = () => {
     formData.append('status', newSlider.status);
 
     try {
-      await fetch('http://localhost:8000/api/sliders', {
+      await fetch('https://logicleap-769836b54d38.herokuapp.com/api/sliders', {
         method: 'POST',
         body: formData,
       });
@@ -79,7 +79,7 @@ const Sliders = () => {
         formData.append('image', editSlider.image);
       }
 
-      const response = await fetch(`http://localhost:8000/api/sliders/${editSlider.id}`, {
+      const response = await fetch(`https://logicleap-769836b54d38.herokuapp.com/api/sliders/${editSlider.id}`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -119,7 +119,7 @@ const Sliders = () => {
     });
 
     if (result.isConfirmed) {
-      await fetch(`http://localhost:8000/api/sliders/${id}/soft-delete`, {
+      await fetch(`https://logicleap-769836b54d38.herokuapp.com/api/sliders/${id}/soft-delete`, {
         method: 'DELETE',
       });
       fetchSliders();
@@ -215,7 +215,7 @@ const Sliders = () => {
                           <td className="fw-medium">{slider.title}</td>
                           <td className="fw-medium">{slider.content}</td>
                           <td className="fw-medium">
-                            <img src={`http://localhost:8000/storage/${slider.image}`} alt={slider.title} width="50" />
+                            <img src={`https://logicleap-769836b54d38.herokuapp.com/storage/${slider.image}`} alt={slider.title} width="50" />
                           </td>
                           <td className="fw-medium"><a href={slider.link}>Link</a></td>
                           <td className="text-center fw-medium">

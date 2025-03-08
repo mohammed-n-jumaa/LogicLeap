@@ -31,8 +31,8 @@ const FormManagement = () => {
             setLoading(true);
             try {
                 const [formsResponse, programsResponse] = await Promise.all([
-                    axios.get('http://localhost:8000/api/forms'),
-                    axios.get('http://localhost:8000/api/programs')
+                    axios.get('https://logicleap-769836b54d38.herokuapp.com/api/forms'),
+                    axios.get('https://logicleap-769836b54d38.herokuapp.com/api/programs')
                 ]);
                 setForms(formsResponse.data);
                 setPrograms(programsResponse.data);
@@ -80,7 +80,7 @@ const FormManagement = () => {
 
     const handleAddForm = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/api/forms', newForm);
+            const response = await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/forms', newForm);
             const newFormWithProgram = {
                 ...response.data,
                 program: programs.find(p => p.id === response.data.program_id)
@@ -97,7 +97,7 @@ const FormManagement = () => {
 
     const handleEditForm = async () => {
         try {
-            const response = await axios.put(`http://localhost:8000/api/forms/${editForm.id}`, editForm);
+            const response = await axios.put(`https://logicleap-769836b54d38.herokuapp.com/api/forms/${editForm.id}`, editForm);
             setForms(forms.map(form => (form.id === editForm.id ? response.data : form)));
             setEditForm(null);
             setIsEditModalOpen(false);
@@ -121,7 +121,7 @@ const FormManagement = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:8000/api/forms/${id}`);
+                await axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/forms/${id}`);
                 setForms(forms.filter(form => form.id !== id));
                 Swal.fire('Deleted!', 'Form has been deleted.', 'success');
             } catch (error) {

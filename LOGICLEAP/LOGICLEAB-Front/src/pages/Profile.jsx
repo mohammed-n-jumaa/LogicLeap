@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import profileImage from '../assets/images/profile/Userpfp.jpg';
@@ -10,7 +9,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/me', {
+        const response = await fetch('https://logicleap-769836b54d38.herokuapp.com/api/me', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`, 
@@ -47,7 +46,8 @@ const Profile = () => {
               <h5 className="card-title fw-semibold mb-4">Profile</h5>
               <div className="row">
                 <div className="col-md-4 text-center">
-                  <img src={profileImage} alt="Profile Picture" className="img-fluid rounded-circle mb-3" /> 
+                  {/* تصحيح نص alt بإزالة كلمة "Picture" */}
+                  <img src={profileImage} alt="Profile" className="img-fluid rounded-circle mb-3" /> 
                   <h3>{user.name}</h3>
                   <p className="text-muted">Role: {user.role}</p>
                 </div>

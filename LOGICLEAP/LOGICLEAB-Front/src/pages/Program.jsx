@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTable, usePagination, useGlobalFilter } from 'react-table';
 import Sidebar from '../components/Sidebar';
@@ -25,11 +25,11 @@ const Program = () => {
   const fetchPrograms = async () => {
     setLoading(true); 
     try {
-      const response = await axios.get('http://localhost:8000/api/programs');
+      const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/programs');
       const programsWithImagePath = response.data.map((program) => ({
         ...program,
         image: program.image
-          ? `http://localhost:8000/storage/${program.image}`
+          ? `https://logicleap-769836b54d38.herokuapp.com/storage/${program.image}`
           : null,
       }));
       setPrograms(programsWithImagePath);
@@ -42,6 +42,38 @@ const Program = () => {
     }
   };
 
+  // Define handler functions using useCallback to prevent unnecessary re-renders
+  const handleShowProgram = useCallback((program) => {
+    setSelectedProgram(program);
+  }, []);
+
+  const handleEditProgram = useCallback((program) => {
+    setEditingProgram(program);
+  }, []);
+
+  const handleDeleteProgram = useCallback(async (programId) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/programs/${programId}`);
+        fetchPrograms();
+        Swal.fire('Deleted!', 'Program has been deleted.', 'success');
+      } catch (err) {
+        setError('Failed to delete program.');
+      }
+    }
+  }, []);
+
+  // Now use these memoized functions in the columns definition
   const columns = useMemo(
     () => [
       {
@@ -99,7 +131,7 @@ const Program = () => {
         ),
       },
     ],
-    []
+    [handleShowProgram, handleEditProgram, handleDeleteProgram]
   );
 
   const {
@@ -130,40 +162,10 @@ const Program = () => {
 
   const { globalFilter, pageIndex, pageSize } = state;
 
-  const handleShowProgram = (program) => {
-    setSelectedProgram(program);
-  };
-
-  const handleEditProgram = (program) => {
-    setEditingProgram(program);
-  };
-
-  const handleDeleteProgram = async (programId) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`http://localhost:8000/api/programs/${programId}`);
-        fetchPrograms();
-        Swal.fire('Deleted!', 'Program has been deleted.', 'success');
-      } catch (err) {
-        setError('Failed to delete program.');
-      }
-    }
-  };
-
   const handleSaveEdit = async (updatedProgram) => {
     try {
       const programId = editingProgram.id;
-      await axios.post(`http://localhost:8000/api/programs/${programId}`, updatedProgram, {
+      await axios.post(`https://logicleap-769836b54d38.herokuapp.com/api/programs/${programId}`, updatedProgram, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -192,7 +194,7 @@ const Program = () => {
         <div className="container-fluid">
           <div className="card">
             <div className="card-body">
-              {loading && <LoadingSpinner />} {/* Show loading spinner when loading */}
+              {loading && <LoadingSpinner />}
               {error && <p className="text-danger">{error}</p>}
 
               <div className="mb-4">

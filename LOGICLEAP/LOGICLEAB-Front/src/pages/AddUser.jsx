@@ -24,7 +24,7 @@ const AddUser = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        fetch('http://localhost:8000/api/users', {
+        fetch('https://logicleap-769836b54d38.herokuapp.com/api/users', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)

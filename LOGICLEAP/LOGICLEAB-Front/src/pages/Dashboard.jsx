@@ -20,10 +20,10 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const responses = await Promise.all([
-                    fetch('http://localhost:8000/api/latest-registrations'),
-                    fetch('http://localhost:8000/api/most-requested'),
-                    fetch('http://localhost:8000/api/courses'),
-                    fetch('http://localhost:8000/api/users')
+                    fetch('https://logicleap-769836b54d38.herokuapp.com/api/latest-registrations'),
+                    fetch('https://logicleap-769836b54d38.herokuapp.com/api/most-requested'),
+                    fetch('https://logicleap-769836b54d38.herokuapp.com/api/courses'),
+                    fetch('https://logicleap-769836b54d38.herokuapp.com/api/users')
                 ]);
 
                 responses.forEach((response) => {

@@ -19,7 +19,7 @@ const Header = () => {
             }
     
             await axios.post(
-                'http://localhost:8000/api/logout',
+                'https://logicleap-769836b54d38.herokuapp.com/api/logout',
                 {},
                 {
                     headers: {

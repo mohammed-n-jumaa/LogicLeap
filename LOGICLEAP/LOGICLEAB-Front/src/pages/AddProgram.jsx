@@ -87,7 +87,7 @@ const AddProgram = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/categories');
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/categories');
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -110,7 +110,7 @@ const AddProgram = () => {
     const formData = new FormData(e.target);
     
     try {
-      const response = await axios.post('http://localhost:8000/api/programs', formData, {
+      await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/programs', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -141,6 +141,11 @@ const AddProgram = () => {
     navigate('/programs');
   };
 
+  const handleSidebarToggle = () => {
+    // Safely toggle sidebar without using javascript:void(0)
+    document.getElementById('main-wrapper').classList.toggle('show-sidebar');
+  };
+
   return (
     <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
       <Sidebar />
@@ -149,9 +154,13 @@ const AddProgram = () => {
           <nav className="navbar navbar-expand-lg navbar-light">
             <ul className="navbar-nav">
               <li className="nav-item d-block d-xl-none">
-                <a className="nav-link sidebartoggler nav-icon-hover" href="javascript:void(0)">
+                <button 
+                  className="nav-link sidebartoggler nav-icon-hover" 
+                  onClick={handleSidebarToggle}
+                  type="button"
+                >
                   <i className="ti ti-menu-2"></i>
-                </a>
+                </button>
               </li>
             </ul>
           </nav>
@@ -166,7 +175,6 @@ const AddProgram = () => {
                   <p className="text-muted text-center">Fill out the form below to add a new program</p>
 
                   <form onSubmit={handleSubmit}>
-                    {/* ... (all the existing form fields remain exactly the same) ... */}
                     <div className="row g-4">
                       <div className="col-md-6">
                         <div className="mb-3">

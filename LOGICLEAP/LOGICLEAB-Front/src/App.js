@@ -16,7 +16,6 @@ import Contacts from './pages/Contacts';
 import Partners from './pages/Partners';
 import FormsManagement from './pages/FormsManagement'; 
 import Profile from './pages/Profile'; 
-import EditProfile from './pages/EditProfile';
 import SuccessStories from './pages/SuccessStories';  
 import FAQManagement from './pages/FAQManagement'; 
 import Login from './pages/Login'; 
@@ -112,10 +111,7 @@ const App = () => {
                         path="/profile" 
                         element={<ProtectedRoute element={<Profile />} />} 
                     />
-                    <Route 
-                        path="/edit-profile" 
-                        element={<ProtectedRoute element={<EditProfile />} />} 
-                    />
+                    
 
                     
                     <Route 

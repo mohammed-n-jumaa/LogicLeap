@@ -3,14 +3,14 @@ import Sidebar from '../components/Sidebar';
 import Header from '../components/Header'; 
 import '../assets/css/styles.min.css';
 import axios from 'axios';
-import LoadingSpinner from '../components/LoadingSpinner'; // Import LoadingSpinner
+import LoadingSpinner from '../components/LoadingSpinner'; 
 
 const ProgramRegistrations = () => {
   const [registrations, setRegistrations] = useState([]);
   const [selectedRegistration, setSelectedRegistration] = useState(null);
   const [newStatus, setNewStatus] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null); 
 
   // Search and pagination states
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +25,7 @@ const ProgramRegistrations = () => {
   const fetchRegistrations = async () => {
     setLoading(true); // Set loading to true before fetching data
     try {
-      const response = await axios.get('http://localhost:8000/api/registrations');
+      const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/registrations');
       setRegistrations(response.data);
       setError(null);
     } catch (error) {
@@ -55,7 +55,7 @@ const ProgramRegistrations = () => {
   };
 
   const handleSaveChanges = () => {
-    axios.put(`http://localhost:8000/api/registrations/${selectedRegistration.id}`, { status: newStatus })
+    axios.put(`https://logicleap-769836b54d38.herokuapp.com/api/registrations/${selectedRegistration.id}`, { status: newStatus })
       .then(response => {
         setRegistrations(prev =>
           prev.map(reg => 

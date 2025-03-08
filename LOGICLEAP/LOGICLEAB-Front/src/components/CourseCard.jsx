@@ -7,7 +7,7 @@ const CourseCard = ({ course }) => {
 
         // Remove any leading slashes and construct the full URL
         const cleanPath = imagePath.replace(/^\/\+/, '');
-        return `http://localhost:8000/storage/${cleanPath}`;
+        return `https://logicleap-769836b54d38.herokuapp.com/storage/${cleanPath}`;
     };
 
     // Image error handling
@@ -30,14 +30,14 @@ const CourseCard = ({ course }) => {
         <div className="col-lg-4">
             <div className="card overflow-hidden hover-img" style={styles.card}>
                 <div className="position-relative" style={styles.positionRelative}>
-                    <img 
+                    <img
                         src={getImageUrl(course.image)}
                         onError={handleImageError}
                         className="card-img-top"
-                        alt={`${course.title} course image`}
+                        alt={`${course.title} course`}
                         style={styles.image}
                     />
-                    <span 
+                    <span
                         className="badge text-bg-light text-dark fs-2 lh-sm mb-9 me-9 py-1 px-2 fw-semibold position-absolute bottom-0 end-0"
                         style={styles.badge}
                     >
@@ -48,7 +48,7 @@ const CourseCard = ({ course }) => {
                     <span className="badge text-bg-light fs-2 py-1 px-2 lh-sm mt-3" style={styles.titleBadge}>
                         {course.title}
                     </span>
-                    <a 
+                    <a
                         href={`/courses/${course.id}`}
                         className="d-block my-4 fs-5 text-dark fw-semibold link-primary"
                         style={styles.link}

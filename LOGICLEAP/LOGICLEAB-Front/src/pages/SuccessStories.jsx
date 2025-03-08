@@ -3,8 +3,8 @@ import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header'; 
 import '../assets/css/styles.min.css';
-import Swal from 'sweetalert2'; // Import SweetAlert
-import LoadingSpinner from '../components/LoadingSpinner'; // Import LoadingSpinner
+import Swal from 'sweetalert2';
+import LoadingSpinner from '../components/LoadingSpinner'; 
 
 const SuccessStories = () => {
   const [stories, setStories] = useState([]);
@@ -27,7 +27,7 @@ const SuccessStories = () => {
   const fetchStories = async () => {
     setLoading(true); // Set loading to true before fetching data
     try {
-      const response = await axios.get('http://localhost:8000/api/success-stories');
+      const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/success-stories');
       setStories(response.data);
       setError(null);
     } catch (error) {
@@ -49,7 +49,7 @@ const SuccessStories = () => {
     formData.append('status', newStory.status);
 
     try {
-      await axios.post('http://localhost:8000/api/success-stories', formData, {
+      await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/success-stories', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -77,7 +77,7 @@ const SuccessStories = () => {
         formData.append('image', editStory.image);
       }
 
-      await axios.post(`http://localhost:8000/api/success-stories/${editStory.id}`, formData, {
+      await axios.post(`https://logicleap-769836b54d38.herokuapp.com/api/success-stories/${editStory.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -104,7 +104,7 @@ const SuccessStories = () => {
     });
 
     if (result.isConfirmed) {
-      await axios.delete(`http://localhost:8000/api/success-stories/${id}`);
+      await axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/success-stories/${id}`);
       fetchStories();
       Swal.fire('Deleted!', 'Your story has been deleted.', 'success'); // SweetAlert
     }
@@ -204,7 +204,8 @@ const SuccessStories = () => {
                           <td className="fw-medium">{story.title}</td>
                           <td className="fw-medium">{story.content}</td>
                           <td className="fw-medium">
-                            <img src={`http://localhost:8000/storage/${story.image}`} alt={`Image of ${story.title}`} width="50" />
+                            {/* Corregido el atributo alt para eliminar "Image of" */}
+                            <img src={`https://logicleap-769836b54d38.herokuapp.com/storage/${story.image}`} alt={story.title} width="50" />
                           </td>
                           <td className="fw-medium">
                             {story.status === 'active' ? (

@@ -25,7 +25,7 @@ const FAQManagement = () => {
     const fetchFAQs = async () => {
       setLoading(true); // Set loading to true before fetching data
       try {
-        const response = await axios.get('http://localhost:8000/api/faqs');
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/faqs');
         setFaqs(response.data);
         setError(null);
       } catch (error) {
@@ -40,7 +40,7 @@ const FAQManagement = () => {
 
   const handleAddFAQ = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/faqs', newFAQ);
+      const response = await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/faqs', newFAQ);
       setFaqs([...faqs, response.data]);
       setNewFAQ({ question: '', answer: '', status: 'active' });
       setIsAddModalOpen(false);
@@ -53,7 +53,7 @@ const FAQManagement = () => {
 
   const handleEditFAQ = async () => {
     try {
-      const response = await axios.put(`http://localhost:8000/api/faqs/${editFAQ.id}`, editFAQ);
+      const response = await axios.put(`https://logicleap-769836b54d38.herokuapp.com/api/faqs/${editFAQ.id}`, editFAQ);
       setFaqs(faqs.map(faq => (faq.id === editFAQ.id ? response.data : faq)));
       setEditFAQ(null);
       setIsEditModalOpen(false);
@@ -77,7 +77,7 @@ const FAQManagement = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:8000/api/faqs/${id}`);
+        await axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/faqs/${id}`);
         setFaqs(faqs.filter(faq => faq.id !== id));
         Swal.fire('Deleted!', 'Your FAQ has been deleted.', 'success'); // SweetAlert
       } catch (error) {

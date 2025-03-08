@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 // Create base axios instance with proper configuration
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: 'https://logicleap-769836b54d38.herokuapp.com/api/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -100,7 +100,7 @@ const Gallery = () => {
 
     setLoading(true);
     try {
-      const response = await api.post('/galleries', formData, {
+      await api.post('/galleries', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -144,7 +144,7 @@ const Gallery = () => {
 
     setLoading(true);
     try {
-      const response = await api.post(`/galleries/${editGallery.id}`, formData, {
+      await api.post(`/galleries/${editGallery.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         }
@@ -232,7 +232,7 @@ const Gallery = () => {
       return path;
     }
     const cleanedPath = path.replace(/^\/+/, '');
-    return `http://localhost:8000/storage/${cleanedPath}`;
+    return `https://logicleap-769836b54d38.herokuapp.com/storage/${cleanedPath}`;
   };
 
   return (
@@ -301,7 +301,7 @@ const Gallery = () => {
                               <img
                                 key={image.id}
                                 src={formatImageUrl(image.image_path)}
-                                alt={`Gallery ${gallery.id} - Image ${index + 1}`}
+                                alt={`Gallery ${gallery.id} #${index + 1}`}
                                 width="50"
                                 height="50"
                                 className="object-fit-cover"
@@ -387,7 +387,7 @@ const Gallery = () => {
                       >
                         <option value="">Select Program</option>
                         {programs.map(program => (
-<option key={program.id} value={program.id}>{program.title || program.name}</option>
+                          <option key={program.id} value={program.id}>{program.title || program.name}</option>
                         ))}
                       </select>
                     </div>
@@ -409,7 +409,7 @@ const Gallery = () => {
                               <div key={index} className="position-relative">
                                 <img
                                   src={URL.createObjectURL(image)}
-                                  alt={`Preview ${index + 1}`}
+                                  alt={`Preview #${index + 1}`}
                                   style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                                 />
                               </div>
@@ -471,7 +471,7 @@ const Gallery = () => {
                           <div key={image.id} className="position-relative">
                             <img
                               src={formatImageUrl(image.image_path)}
-                              alt="Gallery image"
+                              alt="Gallery content"
                               style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                               className={selectedImagesToDelete.includes(image.id) ? 'opacity-50' : ''}
                             />
@@ -509,7 +509,7 @@ const Gallery = () => {
                               <div key={index}>
                                 <img
                                   src={URL.createObjectURL(image)}
-                                  alt={`New preview ${index + 1}`}
+                                  alt={`New upload #${index + 1}`}
                                   style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                                 />
                               </div>

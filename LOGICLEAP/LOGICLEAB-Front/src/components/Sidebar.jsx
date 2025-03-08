@@ -11,13 +11,14 @@ const Sidebar = () => {
         <aside className="left-sidebar">
             <div>
                 <div className="brand-logo d-flex align-items-center justify-content-between">
-                    <span className="hide-menu logo">
-                        <span className="l-logic">L</span>
-                        <span className="ogic">ogic</span>
-                        <span className="l-leap">L</span>
-                        <span className="eap">eap</span>
-                    </span>
-                    <a href="/" className="text-nowrap logo-img"></a>
+                    <Link to="/" className="text-nowrap logo-img d-flex align-items-center text-decoration-none">
+                        <span className="hide-menu logo">
+                            <span className="l-logic">L</span>
+                            <span className="ogic">ogic</span>
+                            <span className="l-leap">L</span>
+                            <span className="eap">eap</span>
+                        </span>
+                    </Link>
                     <div className="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                         <i className="ti ti-x fs-8"></i>
                     </div>
@@ -160,7 +161,6 @@ const Sidebar = () => {
                                 <span className="hide-menu">Form Submissions</span>
                             </Link>
                         </li>
-
                     </ul>
                 </nav>
             </div>

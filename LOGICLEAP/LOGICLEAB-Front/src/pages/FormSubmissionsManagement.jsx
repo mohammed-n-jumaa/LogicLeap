@@ -29,11 +29,11 @@ const FormSubmissionsManagement = () => {
       setLoading(true);
       try {
         // Fetch submissions
-        const submissionsResponse = await axios.get('http://localhost:8000/api/form-submissions');
+        const submissionsResponse = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/form-submissions');
         setSubmissions(submissionsResponse.data);
         
         // Fetch programs for name mapping
-        const programsResponse = await axios.get('http://localhost:8000/api/programs');
+        const programsResponse = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/programs');
         // Create a map of program_id to program title
         const programsMap = {};
         const programsArray = [];
@@ -48,7 +48,7 @@ const FormSubmissionsManagement = () => {
         setProgramsList(programsArray);
         
         // Fetch forms to get field definitions with questions
-        const formsResponse = await axios.get('http://localhost:8000/api/forms');
+        const formsResponse = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/forms');
         const fieldsMap = {};
         formsResponse.data.forEach(form => {
           fieldsMap[form.id] = {};

@@ -21,7 +21,7 @@ const Categories = () => {
 
   useEffect(() => {
     setLoading(true);
-    axios.get('http://localhost:8000/api/categories')
+    axios.get('https://logicleap-769836b54d38.herokuapp.com/api/categories')
       .then(response => {
         setCategories(response.data);
         setLoading(false);
@@ -47,7 +47,7 @@ const Categories = () => {
   const handleAddCategory = () => {
     if (!newCategoryName.trim()) return;
     const newCategory = { name: newCategoryName };
-    axios.post('http://localhost:8000/api/categories', newCategory)
+    axios.post('https://logicleap-769836b54d38.herokuapp.com/api/categories', newCategory)
       .then(response => {
         setCategories([...categories, response.data]);
         setNewCategoryName('');
@@ -66,7 +66,7 @@ const Categories = () => {
 
   const handleUpdateCategory = () => {
     if (!editCategory.name.trim()) return;
-    axios.put(`http://localhost:8000/api/categories/${editCategory.id}`, { name: editCategory.name })
+    axios.put(`https://logicleap-769836b54d38.herokuapp.com/api/categories/${editCategory.id}`, { name: editCategory.name })
       .then(response => {
         setCategories(categories.map(cat => (cat.id === editCategory.id ? { ...cat, name: editCategory.name } : cat)));
         setEditCategory(null);
@@ -89,7 +89,7 @@ const Categories = () => {
       confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:8000/api/categories/${id}`)
+        axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/categories/${id}`)
           .then(response => {
             setCategories(categories.filter(cat => cat.id !== id));
             Swal.fire('Deleted!', 'Your category has been deleted.', 'success');

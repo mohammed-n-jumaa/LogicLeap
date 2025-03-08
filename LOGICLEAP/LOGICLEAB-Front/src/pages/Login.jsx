@@ -41,7 +41,7 @@ const Login = () => {
     
         try {
             console.log('Sending login request...');
-            const response = await axios.post('http://localhost:8000/api/login', {
+            const response = await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/login', {
                 email,
                 password,
                 isAdminPortal: true 

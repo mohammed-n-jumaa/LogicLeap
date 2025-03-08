@@ -26,7 +26,7 @@ const AddService = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/site-services', service)
+        axios.post('https://logicleap-769836b54d38.herokuapp.com/api/site-services', service)
             .then((response) => {
                 setAlertMessage({ type: 'success', text: 'Service added successfully!' });
                 setTimeout(() => {

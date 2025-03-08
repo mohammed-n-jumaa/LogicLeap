@@ -13,7 +13,7 @@ const UserManagement = () => {
     const [modalUser, setModalUser] = useState(null);
     const [editUser, setEditUser] = useState({ id: '', name: '', email: '', phone: '', role: '' });
     const [isLoading, setIsLoading] = useState(true);
-    
+
     // Search and pagination states
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +21,7 @@ const UserManagement = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        fetch('http://localhost:8000/api/users')
+        fetch('https://logicleap-769836b54d38.herokuapp.com/api/users')
             .then((response) => response.json())
             .then((data) => {
                 setUsers(data);
@@ -39,7 +39,7 @@ const UserManagement = () => {
     }, []);
 
     // Filter users based on search
-    const filteredUsers = users.filter(user => 
+    const filteredUsers = users.filter(user =>
         user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         user.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -59,7 +59,7 @@ const UserManagement = () => {
 
     const saveChanges = () => {
         setIsLoading(true);
-        fetch(`http://localhost:8000/api/users/${editUser.id}`, {
+        fetch(`https://logicleap-769836b54d38.herokuapp.com/api/users/${editUser.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(editUser),
@@ -91,7 +91,7 @@ const UserManagement = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 setIsLoading(true);
-                fetch(`http://localhost:8000/api/users/${id}`, { method: 'DELETE' })
+                fetch(`https://logicleap-769836b54d38.herokuapp.com/api/users/${id}`, { method: 'DELETE' })
                     .then(() => {
                         setUsers(users.filter((user) => user.id !== id));
                         Swal.fire('Deleted!', 'User has been deleted.', 'success');
@@ -132,7 +132,7 @@ const UserManagement = () => {
                         <div className="card">
                             <div className="card-body">
                                 <h5 className="card-title fw-semibold mb-4">Users Management</h5>
-                                
+
                                 {/* Search and Controls Section */}
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <div className="d-flex gap-3 align-items-center">
@@ -209,22 +209,21 @@ const UserManagement = () => {
                                     <nav>
                                         <ul className="pagination pagination-primary mb-0">
                                             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                                                <button className="page-link" 
-                                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}>
-                                                    <i className="fas fa-chevron-left"></i>
+                                                <button onClick={handleClick} style={{ textDecoration: 'underline', background: 'none', border: 'none', color: 'blue', cursor: 'pointer' }}>
+                                                    Click me
                                                 </button>
                                             </li>
                                             {[...Array(totalPages)].map((_, i) => (
                                                 <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                                                    <button className="page-link" 
-                                                            onClick={() => setCurrentPage(i + 1)}>
+                                                    <button className="page-link"
+                                                        onClick={() => setCurrentPage(i + 1)}>
                                                         {i + 1}
                                                     </button>
                                                 </li>
                                             ))}
                                             <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                                                <button className="page-link" 
-                                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>
+                                                <button className="page-link"
+                                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}>
                                                     <i className="fas fa-chevron-right"></i>
                                                 </button>
                                             </li>

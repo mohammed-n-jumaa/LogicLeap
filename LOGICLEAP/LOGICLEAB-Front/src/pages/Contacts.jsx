@@ -19,7 +19,7 @@ const Contacts = () => {
   const fetchContacts = async () => {
     setLoading(true); // Set loading to true before fetching data
     try {
-      const response = await fetch('http://localhost:8000/api/contacts');
+      const response = await fetch('https://logicleap-769836b54d38.herokuapp.com/api/contacts');
       if (!response.ok) {
         throw new Error('Failed to fetch contacts');
       }

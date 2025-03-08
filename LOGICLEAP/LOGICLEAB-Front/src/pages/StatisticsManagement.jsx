@@ -50,7 +50,7 @@ const StatisticsManagement = () => {
         const fetchStatistics = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://localhost:8000/api/statistics', {
+                const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/statistics', {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
@@ -77,7 +77,7 @@ const StatisticsManagement = () => {
 
     const handleAddStatistic = async () => {
         try {
-            const response = await axios.post('http://localhost:8000/api/statistics', newStatistic);
+            const response = await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/statistics', newStatistic);
             setStatistics([...statistics, response.data]);
             setNewStatistic({ title: '', value: '', icon: 'fas fa-users', color: 'bg-light-danger', status: 'active' });
             setIsAddModalOpen(false);
@@ -90,7 +90,7 @@ const StatisticsManagement = () => {
 
     const handleEditStatistic = async () => {
         try {
-            const response = await axios.put(`http://localhost:8000/api/statistics/${editStatistic.id}`, editStatistic);
+            const response = await axios.put(`https://logicleap-769836b54d38.herokuapp.com/api/statistics/${editStatistic.id}`, editStatistic);
             setStatistics(statistics.map(stat => (stat.id === editStatistic.id ? response.data : stat)));
             setEditStatistic(null);
             setIsEditModalOpen(false);
@@ -114,7 +114,7 @@ const StatisticsManagement = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:8000/api/statistics/${id}`);
+                await axios.delete(`https://logicleap-769836b54d38.herokuapp.com/api/statistics/${id}`);
                 setStatistics(statistics.filter(stat => stat.id !== id));
                 Swal.fire('Deleted!', 'Your statistic has been deleted.', 'success');
             } catch (error) {
