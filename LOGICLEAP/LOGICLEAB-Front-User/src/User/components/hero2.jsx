@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import illustration1 from './User/assets/img/illustration-1.webp';
-import code5 from './User/assets/img/code5.jpg';
-import code6 from './User/assets/img/code6.jpg';
-import code7 from './User/assets/img/code7.jpg';
+import illustration1 from '../assets/img/illustration-1.webp';
+import code5 from '../assets/img/code5.jpg';
+import code6 from '../assets/img/code6.jpg';
+import code7 from '../assets/img/code7.jpg';
 
 function Hero() {
-  const [activeSlide, setActiveSlide] = useState(0); 
-
+  const [activeSlide, setActiveSlide] = useState(0);
+  
   const slides = [
     { src: code5, title: "First slide label", description: "Some representative placeholder content for the first slide." },
     { src: code6, title: "Second slide label", description: "Some representative placeholder content for the second slide." },
     { src: code7, title: "Third slide label", description: "Some representative placeholder content for the third slide." },
   ];
-
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveSlide((prevSlide) => (prevSlide + 1) % slides.length);
-    }, 15000); 
-
+    }, 15000);
+    
     return () => clearInterval(interval);
   }, []);
-
+  
   const goToNextSlide = () => {
     setActiveSlide((prevSlide) => (prevSlide + 1) % slides.length);
   };
-
+  
   const goToPrevSlide = () => {
     setActiveSlide((prevSlide) => (prevSlide - 1 + slides.length) % slides.length);
   };
-
+  
   return (
     <section id="hero" className="hero section">
       <div id="carouselExampleDark" className="carousel carousel-fade slide" data-bs-ride="carousel">
@@ -65,7 +65,7 @@ function Hero() {
                 <span className="accent-text"> with LogicLeap.</span>
               </h1>
               <p className="mb-4 mb-md-5">
-                At LogicLeap, we’re on a mission to prepare the next generation for a future driven by innovation.
+                At LogicLeap, we're on a mission to prepare the next generation for a future driven by innovation.
               </p>
               <div className="hero-buttons">
                 <a href="#about" className="btn btn-primary me-0 me-sm-2 mx-1">
