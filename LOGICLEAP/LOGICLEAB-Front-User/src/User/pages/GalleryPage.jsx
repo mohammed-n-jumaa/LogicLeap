@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { IoImagesOutline, IoClose, IoExpand, IoArrowBack, IoArrowForward, IoInformationCircle, IoGrid, IoMenu } from 'react-icons/io5';
 import '../assets/css/main.css';
 import Footer from '../components/footer'; 
-
+//test
 const api = axios.create({
   baseURL: 'https://logicleap-769836b54d38.herokuapp.com/api',
   headers: {
