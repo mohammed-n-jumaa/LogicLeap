@@ -14,22 +14,22 @@ class GalleryController extends Controller
     public function index()
     {
         try {
-            $galleries = Gallery::with(['program', 'images'])->get();
+            $galleries = galleries::with(['program', 'images'])->get();
             
-            $galleries = $galleries->map(function($gallery) {
+            $galleries = $galleries->map(function($galleries) {
                 return [
-                    'id' => $gallery->id,
-                    'program_id' => $gallery->program_id,
-                    'program_name' => $gallery->program ? $gallery->program->title : 'Unknown',
+                    'id' => $galleries->id,
+                    'program_id' => $galleries->program_id,
+                    'program_name' => $galleries->program ? $galleries->program->title : 'Unknown',
                     'images' => $gallery->images->map(function($image) {
                         return [
                             'id' => $image->id,
                             'image_path' => $image->image_path
                         ];
                     }),
-                    'status' => $gallery->status,
-                    'created_at' => $gallery->created_at,
-                    'updated_at' => $gallery->updated_at
+                    'status' => $galleries->status,
+                    'created_at' => $galleries->created_at,
+                    'updated_at' => $galleries->updated_at
                 ];
             });
             
@@ -61,7 +61,7 @@ class GalleryController extends Controller
         $firstImagePath = $firstImage->store('gallery', 'public');
         
         // استخدم الإدراج المباشر بأسلوب DB بدلاً من Eloquent create()
-        $galleryId = DB::table('gallery')->insertGetId([
+        $galleryId = DB::table('galleries')->insertGetId([
             'program_id' => $request->program_id,
             'status' => $request->status,
             'image_path' => $firstImagePath,
@@ -81,7 +81,7 @@ class GalleryController extends Controller
         DB::commit();
         
         // استعلم عن السجل المنشأ مع العلاقات
-        $gallery = Gallery::with(['program', 'images'])->find($galleryId);
+        $gallery = galleries::with(['program', 'images'])->find($galleryId);
         
         return response()->json([
             'id' => $gallery->id,
@@ -117,14 +117,14 @@ class GalleryController extends Controller
 
             DB::beginTransaction();
 
-            $gallery = Gallery::findOrFail($id);
+            $gallery = galleries::findOrFail($id);
             $gallery->program_id = $request->program_id;
             $gallery->status = $request->status;
             $gallery->save();
 
             // Delete selected images
             if ($request->has('delete_image_ids')) {
-                $imagesToDelete = GalleryImage::whereIn('id', $request->delete_image_ids)
+                $imagesToDelete = GalleryImages::whereIn('id', $request->delete_image_ids)
                     ->where('gallery_id', $gallery->id)
                     ->get();
 
@@ -140,7 +140,7 @@ class GalleryController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $imagePath = $image->store('gallery', 'public');
-                    GalleryImage::create([
+                    GalleryImages::create([
                         'gallery_id' => $gallery->id,
                         'image_path' => $imagePath
                     ]);
@@ -176,7 +176,7 @@ class GalleryController extends Controller
         try {
             DB::beginTransaction();
 
-            $gallery = Gallery::findOrFail($id);
+            $gallery = galleries::findOrFail($id);
 
             // Delete all associated images
             foreach ($gallery->images as $image) {
