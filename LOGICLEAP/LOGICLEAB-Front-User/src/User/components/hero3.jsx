@@ -13,7 +13,7 @@ function Hero3() {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/sliders'); 
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/sliders'); 
         setSlides(response.data); 
         setError(null); 
       } catch (err) {
@@ -31,7 +31,7 @@ function Hero3() {
   useEffect(() => {
     const fetchStatistics = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/statistics', {
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/statistics', {
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -110,7 +110,7 @@ function Hero3() {
         <div className="carousel-inner">
           {slides.map((slide, index) => (
             <div key={index} className={`carousel-item ${activeSlide === index ? 'active' : ''}`}>
-              <img src={`http://localhost:8000/storage/${slide.image}`} className="d-block w-100" alt={`Slide ${index + 1}`} />
+              <img src={`https://logicleap-769836b54d38.herokuapp.com/storage/${slide.image}`} className="d-block w-100" alt={`Slide ${index + 1}`} />
               <div className="carousel-caption d-none d-md-block">
                
               </div>

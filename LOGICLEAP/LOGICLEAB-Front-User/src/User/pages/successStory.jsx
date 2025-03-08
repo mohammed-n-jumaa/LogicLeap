@@ -10,10 +10,10 @@ function SuccessStory() {
     const fetchStories = async () => {
       setLoading(true); // تعيين حالة التحميل إلى true قبل جلب البيانات
       try {
-        const response = await axios.get('http://localhost:8000/api/success-stories');
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/success-stories');
         const storiesWithImagePath = response.data.map((story) => ({
           ...story,
-          image: story.image ? `http://localhost:8000/storage/${story.image}` : null, // معالجة الصورة إذا كانت موجودة
+          image: story.image ? `https://logicleap-769836b54d38.herokuapp.com/storage/${story.image}` : null, // معالجة الصورة إذا كانت موجودة
         }));
         setStories(storiesWithImagePath); // تحديث قائمة القصص
         setError(null); // إعادة تعيين الخطأ إذا تم جلب البيانات بنجاح

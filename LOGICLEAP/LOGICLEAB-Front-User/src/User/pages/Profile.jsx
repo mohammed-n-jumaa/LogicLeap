@@ -17,7 +17,7 @@ function Profile() {
   const fetchUserData = async () => {
     try {
       const token = localStorage.getItem('auth-token');
-      const response = await fetch('http://localhost:8000/api/me', {
+      const response = await fetch('https://logicleap-769836b54d38.herokuapp.com/api/me', {
         headers: {
           'Authorization': `Bearer ${token}`,
         }
@@ -40,7 +40,7 @@ function Profile() {
   const fetchConfirmedPrograms = async (userId) => {
     try {
       const token = localStorage.getItem('auth-token');
-      const response = await fetch(`http://localhost:8000/api/user/${userId}/confirmed-programs`, {
+      const response = await fetch(`https://logicleap-769836b54d38.herokuapp.com/api/user/${userId}/confirmed-programs`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }

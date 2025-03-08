@@ -25,7 +25,7 @@ function Header({ onLogout }) {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('auth-token');
-      const response = await fetch('http://localhost:8000/api/logout', {
+      const response = await fetch('https://logicleap-769836b54d38.herokuapp.com/api/logout', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -49,7 +49,7 @@ function Header({ onLogout }) {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    setIsDropdownOpen(false); // إغلاق الـ dropdown عند فتح البرجر منيو
+    setIsDropdownOpen(false); 
   };
 
   const isActive = (path) => location.pathname === path ? 'active' : '';

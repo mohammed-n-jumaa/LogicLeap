@@ -21,7 +21,7 @@ const CourseDetails = () => {
     // Fetch program data from Laravel backend
     const fetchProgram = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/programs/${id}`);
+        const response = await axios.get(`https://logicleap-769836b54d38.herokuapp.com/api/programs/${id}`);
         setProgram(response.data);
         setLoading(false);
         
@@ -66,7 +66,7 @@ const CourseDetails = () => {
       return path;
     }
     const cleanedPath = path.replace(/^\/+/, '');
-    return `http://localhost:8000/storage/${cleanedPath}`;
+    return `https://logicleap-769836b54d38.herokuapp.com/storage/${cleanedPath}`;
   };
 
   // Check if gallery has any images
@@ -452,7 +452,7 @@ const CourseDetails = () => {
       ) : (
         <div className="empty-gallery">
           <i className="bi bi-images" style={{ fontSize: "48px", color: "#6c757d", marginBottom: "8px" }}></i>
-          <h4 className="text-muted">Course Overview</h4>
+          <h4 className="text-muted">Programw Overview</h4>
           <p className="text-center text-muted px-4">Explore our comprehensive curriculum and program details below</p>
         </div>
       )}
@@ -478,7 +478,7 @@ const CourseDetails = () => {
             <div className="col-md-8">
               {/* Course Overview */}
               <div className="course-section">
-                <h2 className="mb-4">Course Overview</h2>
+                <h2 className="mb-4">Programe Overview</h2>
                 <p>{program.description}</p>
               </div>
 
@@ -502,7 +502,7 @@ const CourseDetails = () => {
             <div className="col-md-4">
               <div className="card">
                 <div className="card-body">
-                  <h3 className="card-title">Course Details</h3>
+                  <h3 className="card-title">Programe Details</h3>
                   <ul className="list-unstyled">
                     <li>
                       <strong>Duration:</strong> {program.duration} {program.duration > 1 ? 'Hours' : 'Hour'}
@@ -524,7 +524,7 @@ const CourseDetails = () => {
                     <div className="accordion-item">
                       <h2 className="accordion-header">
                         <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#moduleContent">
-                          Course Modules
+                          Programe Modules
                         </button>
                       </h2>
                       <div id="moduleContent" className="accordion-collapse collapse show">

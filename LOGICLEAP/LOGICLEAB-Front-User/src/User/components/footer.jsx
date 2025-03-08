@@ -34,7 +34,7 @@ function Footer() {
   }, [allGalleryImages]);
 
   const api = axios.create({
-    baseURL: 'http://localhost:8000/api',
+    baseURL: 'https://logicleap-769836b54d38.herokuapp.com/api',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -91,7 +91,7 @@ function Footer() {
 
   const formatImageUrl = (path) => {
     if (!path) return '/placeholder-image.jpg';
-    return `http://localhost:8000/storage/${path.replace(/^\/+/, '')}`;
+    return `https://logicleap-769836b54d38.herokuapp.com/storage/${path.replace(/^\/+/, '')}`;
   };
 
   return (

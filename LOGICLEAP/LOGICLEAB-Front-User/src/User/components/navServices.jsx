@@ -2,40 +2,38 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function Features() {
-  const [activeTab, setActiveTab] = useState(0);  // تعيين الفئة النشطة
-  const [services, setServices] = useState([]);  // لتخزين الخدمات التي سيتم جلبها
-  const [loading, setLoading] = useState(true);  // حالة التحميل
-  const [error, setError] = useState(null);  // حالة الخطأ
+  const [activeTab, setActiveTab] = useState(0);  
+  const [services, setServices] = useState([]);  
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null);  
 
-  // جلب البيانات من الـ API
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/site-services');  // تأكد من الرابط الخاص بـ API
-        setServices(response.data);  // تعيين البيانات في حالة الخدمات
-        setError(null);  // إعادة تعيين الخطأ إذا تم جلب البيانات بنجاح
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/site-services');  // تأكد من الرابط الخاص بـ API
+        setServices(response.data);  
+        setError(null); 
       } catch (err) {
         console.error(err.message);
-        setError('Failed to fetch services.');  // تعيين الخطأ في حالة حدوث استثناء
+        setError('Failed to fetch services.'); 
       } finally {
-        setLoading(false);  // تعيين حالة التحميل إلى false بعد إتمام جلب البيانات
+        setLoading(false); 
       }
     };
 
     fetchServices();
   }, []);
 
-  // التعامل مع التبديل بين الـ tabs
   const handleTabClick = (index) => {
     setActiveTab(index);
   };
 
   if (loading) {
-    return <div>Loading...</div>; // عرض نص التحميل أثناء جلب البيانات
+    return <div>Loading...</div>; 
   }
 
   if (error) {
-    return <div>{error}</div>; // عرض رسالة الخطأ إذا كان هناك مشكلة
+    return <div>{error}</div>; 
   }
 
   return (
@@ -56,7 +54,7 @@ function Features() {
                   className={`nav-link ${activeTab === index ? 'active show' : ''}`}
                   onClick={() => handleTabClick(index)}
                 >
-                  <h4>{service.title}</h4>  {/* عرض العنوان من الـ API */}
+                  <h4>{service.title}</h4>  
                 </a>
               </li>
             ))}
@@ -71,8 +69,8 @@ function Features() {
             >
               <div className="row">
                 <div className="col-lg-6 order-2 order-lg-1 mt-3 mt-lg-0 d-flex flex-column justify-content-center">
-                  <h3>{service.title}</h3>  {/* عرض العنوان في الفقرة */}
-                  <p className="fst-italic">{service.description}</p>  {/* عرض الوصف في الفقرة */}
+                  <h3>{service.title}</h3>  
+                  <p className="fst-italic">{service.description}</p> 
 
                   <div className="hero-buttons">
                     <a href="/registrationServices" className="btn btn-primary me-0 me-sm-2 mx-1 mt-1">Contact us</a>

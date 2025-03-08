@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import "../assets/css/main.css";  // تأكد من أن لديك ملفات CSS المناسبة
-
+import "../assets/css/main.css";  
 function Header() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
 
-  // التبديل بين الوضعين "active" و "non-active" لقائمة الموبايل
   const toggleMobileNav = () => {
     setMobileNavActive(!mobileNavActive);
   };
 
-  // إغلاق القائمة المنبثقة عند الضغط على رابط من قائمة التنقل
+ 
   useEffect(() => {
     const navLinks = document.querySelectorAll('#navmenu a');
     navLinks.forEach(navLink => {

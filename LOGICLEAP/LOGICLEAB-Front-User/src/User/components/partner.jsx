@@ -14,7 +14,7 @@ function Clients() {
       setLoading(true);
       
       try {
-        const response = await axios.get('http://localhost:8000/api/partners');
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/partners');
         setClients(response.data);
         setError(null);
       } catch (err) {
@@ -86,7 +86,7 @@ function Clients() {
               >
                 <div className="partner-item p-3">
                   <img
-                    src={`http://localhost:8000/storage/${client.logo}`}
+                    src={`https://logicleap-769836b54d38.herokuapp.com/storage/${client.logo}`}
                     className="img-fluid mx-auto"
                     alt={client.name || `Partner ${index + 1}`}
                     style={{

@@ -26,7 +26,7 @@ function Contact() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8000/api/contacts', {
+      const response = await fetch('https://logicleap-769836b54d38.herokuapp.com/api/contacts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

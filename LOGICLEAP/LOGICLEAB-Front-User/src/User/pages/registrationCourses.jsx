@@ -39,7 +39,7 @@ const CustomServiceForm = () => {
           return;
         }
         
-        const response = await axios.get(`http://localhost:8000/api/forms?program_id=${programId}`);
+        const response = await axios.get(`https://logicleap-769836b54d38.herokuapp.com/api/forms?program_id=${programId}`);
         console.log('API Response:', response.data);
 
         if (response.data && response.data.length > 0) {
@@ -96,7 +96,7 @@ const CustomServiceForm = () => {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await axios.post('http://localhost:8000/api/form-submissions', {
+      const response = await axios.post('https://logicleap-769836b54d38.herokuapp.com/api/form-submissions', {
         form_id: formData.id,
         program_id: formData.program_id,
         values: formValues

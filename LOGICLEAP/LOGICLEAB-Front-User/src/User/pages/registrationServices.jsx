@@ -25,7 +25,7 @@ const CustomServiceForm = () => {
     const fetchServices = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8000/api/site-services');
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/site-services');
         setServices(response.data);
         setLoading(false);
       } catch (err) {
@@ -40,7 +40,7 @@ const CustomServiceForm = () => {
       try {
         const token = localStorage.getItem('token');
         if (token) {
-          const response = await axios.get('http://localhost:8000/api/me', {
+          const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/me', {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -91,7 +91,7 @@ const CustomServiceForm = () => {
       }
 
       const response = await axios.post(
-        'http://localhost:8000/api/service-requests', 
+        'https://logicleap-769836b54d38.herokuapp.com/api/service-requests', 
         serviceData,
         config
       );

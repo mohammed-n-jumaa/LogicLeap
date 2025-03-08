@@ -11,14 +11,13 @@ function Courses() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // تحميل البرامج والفئات
   useEffect(() => {
     const fetchProgramsAndCategories = async () => {
       setLoading(true);
       try {
         const [programsResponse, categoriesResponse] = await Promise.all([
-          axios.get('http://localhost:8000/api/programs'),
-          axios.get('http://localhost:8000/api/categories'),
+          axios.get('https://logicleap-769836b54d38.herokuapp.com/api/programs'),
+          axios.get('https://logicleap-769836b54d38.herokuapp.com/api/categories'),
         ]);
         
         // Filter programs to only include those with status "active"
@@ -28,7 +27,7 @@ function Courses() {
         
         const programsWithImagePath = activePrograms.map((program) => ({
           ...program,
-          image: program.image ? `http://localhost:8000/storage/${program.image}` : null,
+          image: program.image ? `https://logicleap-769836b54d38.herokuapp.com/storage/${program.image}` : null,
         }));
         
         setPrograms(programsWithImagePath);
@@ -57,8 +56,8 @@ function Courses() {
     <main className="main mt-5">
       <section id="Courses" className="pricing section light-background">
         <div className="container section-title" data-aos="fade-up">
-          <h2>Courses</h2>
-          <p>Explore Our Comprehensive Courses in Information Technology</p>
+          <h2>Programs</h2>
+          <p>Explore Our Comprehensive Programs in Information Technology</p>
         </div>
         <div className="container" data-aos="fade-up" data-aos-delay={100}>
           <div className="row g-4 justify-content-center">
@@ -67,7 +66,7 @@ function Courses() {
             
             {!loading && !error && programs.length === 0 && (
               <div className="col-12 text-center">
-                <p>No active courses available at the moment.</p>
+                <p>No active Programs available at the moment.</p>
               </div>
             )}
             

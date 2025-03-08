@@ -29,7 +29,7 @@ function FaqSection() {
     const fetchFaqs = async () => {
       setLoading(true); // Set loading state to true before fetching data
       try {
-        const response = await axios.get('http://localhost:8000/api/faqs');
+        const response = await axios.get('https://logicleap-769836b54d38.herokuapp.com/api/faqs');
         setFaqs(response.data); // Set FAQs data from API response
         setError(null); // Reset error state if the request is successful
       } catch (err) {

@@ -16,8 +16,8 @@ function Courses() {
       setLoading(true);
       try {
         const [programsResponse, categoriesResponse] = await Promise.all([
-          axios.get('http://localhost:8000/api/programs'),
-          axios.get('http://localhost:8000/api/categories'),
+          axios.get('https://logicleap-769836b54d38.herokuapp.com/api/programs'),
+          axios.get('https://logicleap-769836b54d38.herokuapp.com/api/categories'),
         ]);
                 
         // Filter to only include active programs
@@ -27,7 +27,7 @@ function Courses() {
         
         const programsWithImagePath = activePrograms.map((program) => ({
           ...program,
-          image: program.image ? `http://localhost:8000/storage/${program.image}` : null,
+          image: program.image ? `https://logicleap-769836b54d38.herokuapp.com/storage/${program.image}` : null,
         }));
                 
         setPrograms(programsWithImagePath);
