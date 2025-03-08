@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import heroImage from '../assets/img/illustration-1.webp';
 
 function Hero() {
-  const [activeSlide, setActiveSlide] = useState(0);  // حالة لتخزين الشريحة النشطة
+  const [activeSlide, setActiveSlide] = useState(0); 
   const slides = [
     { src: "assets/img/code5.jpg", title: "First slide label", description: "Some representative placeholder content for the first slide." },
     { src: "assets/img/code6.jpg", title: "Second slide label", description: "Some representative placeholder content for the second slide." },
@@ -77,7 +78,7 @@ function Hero() {
       </div>
       <div className="col-lg-6">
         <div className="hero-image" data-aos="zoom-out" data-aos-delay={300}>
-          <img src="assets/img/illustration-1.webp" alt="Hero Image" className="img-fluid" />
+        <img src={heroImage} alt="Hero Image" className="img-fluid" />
         </div>
       </div>
     </div>
